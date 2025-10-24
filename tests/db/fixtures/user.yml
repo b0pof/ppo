@@ -1,0 +1,28 @@
+# user.yml
+- id: 1
+  role: 'buyer'
+  name: 'User1 Name'
+  login: 'user1'
+  phone: '88005553535'
+  password: '$2a$10$fMfBQXaBUDqfl5VU2xOmpeUtX.l.Vx1ZfkaDADAcnzr7hHYZqPru.'
+
+- id: 2
+  role: 'seller'
+  name: 'User2 Name'
+  login: 'user2'
+  phone: '89005553535'
+  password: 'asjsdoifhnweipfn'
+
+- id: 3
+  role: 'buyer'
+  name: 'Alex'
+  login: 'alex_2'
+  phone: '89505553535'
+  password: 'qwonvpwiehr'
+
+- id: 4
+  role: 'seller'
+  name: 'Best Toys'
+  login: 'toys_seller'
+  phone: '89705553535'
+  password: 'qwpnviwhe'

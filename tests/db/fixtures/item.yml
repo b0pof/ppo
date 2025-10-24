@@ -1,0 +1,28 @@
+# item.yml
+- id: 1
+  name: 'Doll'
+  seller_id: 2
+  price: 1000
+  description: 'Great Doll!'
+  imgsrc: 'https://example.com/doll'
+
+- id: 2
+  name: 'Plastic car'
+  seller_id: 2
+  price: 1200
+  description: 'Great Car!'
+  imgsrc: 'https://example.com/car'
+
+- id: 3
+  name: 'Lego set'
+  seller_id: 2
+  price: 1999
+  description: 'Lego city'
+  imgsrc: 'https://example.com/lego'
+
+- id: 4
+  name: 'Bow'
+  seller_id: 4
+  price: 700
+  description: 'Great Bow!'
+  imgsrc: 'https://example.com/bow'

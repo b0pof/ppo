@@ -1,0 +1,16 @@
+# order_item.yml
+- order_id: 1
+  item_id: 1
+  count: 5
+
+- order_id: 2
+  item_id: 4
+  count: 1
+
+- order_id: 2
+  item_id: 3
+  count: 3
+
+- order_id: 3
+  item_id: 3
+  count: 2

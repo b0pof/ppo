@@ -1,0 +1,15 @@
+-+= 00001 root /sbin/launchd
+ \-+= 65570 iakovalev /Applications/GoLand.app/Contents/MacOS/goland
+   \-+= 67392 iakovalev /bin/zsh --login -i
+     \-+= 01945 iakovalev /bin/bash ./proc.sh
+       \-+- 01949 iakovalev go test -v ./...
+         |--- 02051 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b759/auth.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b759/testlog.txt -test.paniconexit
+         |--- 02052 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b772/item.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b772/testlog.txt -test.paniconexit
+         |--- 02053 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b775/order.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b775/testlog.txt -test.paniconexi
+         |--- 02054 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b769/cart.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b769/testlog.txt -test.paniconexit
+         |--- 02055 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b778/user.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b778/testlog.txt -test.paniconexit
+         |--- 02057 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b784/cookie.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b784/testlog.txt -test.paniconex
+         |--- 02058 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b781/auth.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b781/testlog.txt -test.paniconexit
+         |--- 02059 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b788/response.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b788/testlog.txt -test.panicon
+         \--- 02061 iakovalev /var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b793/password.test -test.testlogfile=/var/folders/fz/8vh69cmj7nj9nkw1jrn8xzn00000gn/T/go-build809823076/b793/testlog.txt -test.panicon
+

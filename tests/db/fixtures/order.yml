@@ -1,0 +1,15 @@
+# order.yml
+- id: 1
+  buyer_id: 1
+  status: 'created'
+  created_at: 2025-03-23 10:04:24.284191 +00:00
+
+- id: 2
+  buyer_id: 1
+  status: 'ready'
+  created_at: 2025-03-23 10:04:24.284191 +00:00
+
+- id: 3
+  buyer_id: 3
+  status: 'done'
+  created_at: 2025-02-17 10:04:24.284191 +00:00

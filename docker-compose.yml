@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: postgres-ppo
+    volumes:
+      - 'postgres-ppo-data:/var/lib/postgresql/data'
+    ports:
+      - '5432:5432'
+    user: postgres
+    environment:
+      - POSTGRES_DB=master
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: pg_isready
+      interval: 10s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: 'redis'
+    container_name: redis-ppo
+    restart: always
+    ports:
+      - '6379:6379'
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo -n '' > /dev/tcp/127.0.0.1/6379" ]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    volumes:
+      - 'redis-ppo-data:/data'
+
+volumes:
+  postgres-ppo-data:
+  redis-ppo-data:

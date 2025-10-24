@@ -1,0 +1,21 @@
+{"time":"2025-04-15T23:08:59.131903+03:00","level":"DEBUG","msg":"debug"}
+{"time":"2025-04-15T23:08:59.131955+03:00","level":"INFO","msg":"info"}
+{"time":"2025-04-15T23:08:59.131963+03:00","level":"WARN","msg":"warn"}
+{"time":"2025-04-15T23:08:59.131969+03:00","level":"ERROR","msg":"error"}
+{"time":"2025-04-15T23:08:59.145058+03:00","level":"INFO","msg":"server is running..."}
+{"time":"2025-04-15T23:09:38.060743+03:00","level":"INFO","msg":"shutting down..."}
+{"time":"2025-04-15T23:09:38.061286+03:00","level":"ERROR","msg":"HTTP server ListenAndServe error: http: Server closed"}
+{"time":"2025-04-15T23:09:49.802013+03:00","level":"DEBUG","msg":"debug"}
+{"time":"2025-04-15T23:09:49.802112+03:00","level":"INFO","msg":"info"}
+{"time":"2025-04-15T23:09:49.802118+03:00","level":"WARN","msg":"warn"}
+{"time":"2025-04-15T23:09:49.802123+03:00","level":"ERROR","msg":"error"}
+{"time":"2025-04-15T23:09:49.811964+03:00","level":"INFO","msg":"server is running..."}
+{"time":"2025-04-15T23:09:58.261418+03:00","level":"INFO","msg":"shutting down..."}
+{"time":"2025-04-15T23:09:58.261629+03:00","level":"ERROR","msg":"HTTP server ListenAndServe error: http: Server closed"}
+{"time":"2025-04-16T10:39:29.743977+03:00","level":"DEBUG","msg":"debug"}
+{"time":"2025-04-16T10:39:29.744261+03:00","level":"INFO","msg":"info"}
+{"time":"2025-04-16T10:39:29.744269+03:00","level":"WARN","msg":"warn"}
+{"time":"2025-04-16T10:39:29.744273+03:00","level":"ERROR","msg":"error"}
+{"time":"2025-04-16T10:39:29.75884+03:00","level":"INFO","msg":"server is running..."}
+{"time":"2025-04-16T10:39:48.976646+03:00","level":"INFO","msg":"shutting down..."}
+{"time":"2025-04-16T10:39:48.97695+03:00","level":"ERROR","msg":"HTTP server ListenAndServe error: http: Server closed"}
