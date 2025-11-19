@@ -1,0 +1,98 @@
+=== RUN   TestSuite/ItemFlow/Tests/TestFullItemFlow
+db_client.go:111: Cleanup for test TestFullItemFlow finished in 46.902792ms
+db_client.go:156: DB preparation for test TestFullItemFlow finished in 147.679583ms
+assertions.go:387: 
+	Error Trace:	/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:205
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/helper.go:27
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:201
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/helper/helper.go:65
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:100
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:36
+	        				/usr/local/go/src/reflect/value.go:581
+	        				/usr/local/go/src/reflect/value.go:365
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+	Error:  	Received unexpected error:
+	        	item usecase: failed to get item: not found
+	Test:   	TestFullItemFlow
+assertions.go:387: 
+	Error Trace:	/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:121
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/helper.go:27
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:117
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/helper/helper.go:40
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:101
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:36
+	        				/usr/local/go/src/reflect/value.go:581
+	        				/usr/local/go/src/reflect/value.go:365
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+	Error:  	Not equal: 
+	        	expected: "Toy Horse Deluxe"
+	        	actual  : ""
+	        	
+	        	Diff:
+	        	--- Expected
+	        	+++ Actual
+	        	@@ -1 +1 @@
+	        	-Toy Horse Deluxe
+	        	+
+	Test:   	TestFullItemFlow
+assertions.go:387: 
+	Error Trace:	/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:121
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/helper.go:27
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:117
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/helper/helper.go:40
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:102
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:36
+	        				/usr/local/go/src/reflect/value.go:581
+	        				/usr/local/go/src/reflect/value.go:365
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+	Error:  	Not equal: 
+	        	expected: 3000
+	        	actual  : 0
+	Test:   	TestFullItemFlow
+assertions.go:387: 
+	Error Trace:	/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:121
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/helper.go:27
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:117
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/helper/helper.go:40
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:103
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:36
+	        				/usr/local/go/src/reflect/value.go:581
+	        				/usr/local/go/src/reflect/value.go:365
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+	Error:  	Not equal: 
+	        	expected: "Upgraded toy horse"
+	        	actual  : ""
+	        	
+	        	Diff:
+	        	--- Expected
+	        	+++ Actual
+	        	@@ -1 +1 @@
+	        	-Upgraded toy horse
+	        	+
+	Test:   	TestFullItemFlow
+assertions.go:387: 
+	Error Trace:	/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:259
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/helper.go:27
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/wrapper/wrapper.go:255
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/asserts_wrapper/helper/helper.go:75
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:109
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+	        				/Users/iakovalev/Desktop/temp/ppo/tests/integration/usecase/item_test.go:36
+	        				/usr/local/go/src/reflect/value.go:581
+	        				/usr/local/go/src/reflect/value.go:365
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+	        				/Users/iakovalev/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+	Error:  	Target error should be in err chain:
+	        	expected: "no access"
+	        	in chain: "item usecase: failed to get item: not found"
+	        		"not found"
+	Test:   	TestFullItemFlow
+--- FAIL: TestSuite/ItemFlow/Tests/TestFullItemFlow (0.33s)

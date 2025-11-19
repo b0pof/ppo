@@ -32,6 +32,106 @@ services:
     volumes:
       - 'redis-ppo-data:/data'
 
+  # Monitoring
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    user: root
+    env_file:
+      - '.env'
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml
+    hostname: prometheus
+    environment:
+      TZ: "Europe/Moscow"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    user: root
+    env_file:
+      - '.env'
+    depends_on:
+      - prometheus
+    ports:
+      - '3100:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+    hostname: grafana
+    environment:
+      - TERM=linux
+      - GF_LOG_LEVEL=debug
+      - GF_DATAPROXY_LOGGING=true
+      - GF_DEFAULT_APP_MODE=development
+      - TZ="Europe/Moscow"
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    hostname: exporter
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points
+      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+    ports:
+      - '9100:9100'
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - PGADMIN_DEFAULT_EMAIL='admin@admin.com'
+      - PGADMIN_DEFAULT_PASSWORD='admin'
+      - PGADMIN_CONFIG_SCRIPT_NAME='/admin'
+      - PGADMIN_CONFIG_X_FRAME_OPTIONS=''
+      - PGADMIN_CONFIG_CONTENT_SECURITY_POLICY=''
+      - PGADMIN_CONFIG_ENABLE_SERVICE_WORKERS=False
+    ports:
+      - "8090:80"
+    volumes:
+      - ./temp/servers.json:/pgadmin4/servers.json
+      - ./temp/pgpass:/pgpass
+      - pgadmin-data:/var/lib/pgadmin
+    command: >
+      sh -c "
+        chmod 600 /pgpass &&
+        /entrypoint.sh
+      "
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  nginx:
+    image: nginx:alpine
+    user: root
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./static:/usr/share/nginx/html/static
+      - ./README.md:/usr/share/nginx/html/Readme.md
+      - ./httpcli:/usr/share/nginx/html/httpcli
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
 volumes:
   postgres-ppo-data:
   redis-ppo-data:
+  grafana-data:
+  prometheus-data:
+  pgadmin-data:

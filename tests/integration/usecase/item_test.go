@@ -8,10 +8,10 @@ import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	itemRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/item"
-	itemUsecase "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/item"
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/controller"
+	"github.com/b0pof/ppo/internal/model"
+	itemRepo "github.com/b0pof/ppo/internal/repository/item"
+	itemUsecase "github.com/b0pof/ppo/internal/usecase/item"
+	"github.com/b0pof/ppo/tests/controller"
 )
 
 type ItemFlow struct {

@@ -25,8 +25,8 @@ type ServiceConfig struct {
 }
 
 type PostgresConfig struct {
-	Host         string `yaml:"host"`
-	Port         string `yaml:"port"`
+	Host         string `yaml:"host" env:"POSTGRES_HOST"`
+	Port         string `yaml:"port" env:"POSTGRES_PORT"`
 	User         string `yaml:"user" env:"POSTGRES_USER"`
 	Password     string `yaml:"password" env:"POSTGRES_PASSWORD"`
 	Database     string `yaml:"database"`

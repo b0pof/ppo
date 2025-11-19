@@ -6,14 +6,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	dto "git.iu7.bmstu.ru/kia22u475/ppo/internal/generated"
 	"net/http"
 	"net/http/cookiejar"
 
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/controller"
+	dto "github.com/b0pof/ppo/internal/generated"
+	"github.com/b0pof/ppo/tests/controller"
 )
 
 type CreateOrderFlow struct {

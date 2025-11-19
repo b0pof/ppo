@@ -1,8 +1,8 @@
 package category
 
 import (
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/category"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/item"
+	"github.com/b0pof/ppo/internal/repository/category"
+	"github.com/b0pof/ppo/internal/repository/item"
 )
 
 type Category struct {

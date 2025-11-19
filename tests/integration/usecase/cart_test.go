@@ -8,9 +8,9 @@ import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	cartRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/cart"
-	cartUsecase "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/cart"
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/controller"
+	cartRepo "github.com/b0pof/ppo/internal/repository/cart"
+	cartUsecase "github.com/b0pof/ppo/internal/usecase/cart"
+	"github.com/b0pof/ppo/tests/controller"
 )
 
 type CartTest struct {

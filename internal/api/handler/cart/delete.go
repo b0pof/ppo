@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
-	dto "git.iu7.bmstu.ru/kia22u475/ppo/internal/generated"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
+	dto "github.com/b0pof/ppo/internal/generated"
+	"github.com/b0pof/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/util/http/response"
 )
 
 func (h *Cart) DeleteApi1UsersUserIdCartItemsItemId(w http.ResponseWriter, r *http.Request, userId int64, itemId int64) {

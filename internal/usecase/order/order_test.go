@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	. "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/order"
-
 	"github.com/golang/mock/gomock"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
+
+	"github.com/b0pof/ppo/internal/model"
+	. "github.com/b0pof/ppo/internal/usecase/order"
 )
 
 type OrderUsecase struct {

@@ -3,9 +3,9 @@ package review
 import (
 	"net/http"
 
-	dto "git.iu7.bmstu.ru/kia22u475/ppo/internal/generated"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
+	dto "github.com/b0pof/ppo/internal/generated"
+	"github.com/b0pof/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/util/http/response"
 )
 
 func (h *Review) GetApi1ItemsIdReviews(w http.ResponseWriter, r *http.Request, id int64) {

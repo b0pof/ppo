@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/model"
 )
 
 func (r *Repository) GetByID(ctx context.Context, userID int64) (model.User, error) {

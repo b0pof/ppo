@@ -4,12 +4,12 @@ import (
 	"errors"
 	"net/http"
 
-	dto "git.iu7.bmstu.ru/kia22u475/ppo/internal/generated"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	authUtil "git.iu7.bmstu.ru/kia22u475/ppo/internal/util/auth"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/request"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/pointer"
+	dto "github.com/b0pof/ppo/internal/generated"
+	"github.com/b0pof/ppo/internal/model"
+	authUtil "github.com/b0pof/ppo/internal/util/auth"
+	"github.com/b0pof/ppo/internal/util/http/request"
+	"github.com/b0pof/ppo/internal/util/http/response"
+	"github.com/b0pof/ppo/internal/util/pointer"
 )
 
 func (h *Item) PutApi1ItemsId(w http.ResponseWriter, r *http.Request, id int64) {

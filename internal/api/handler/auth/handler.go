@@ -3,7 +3,7 @@ package auth
 import (
 	"time"
 
-	usecase "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/auth"
+	usecase "github.com/b0pof/ppo/internal/usecase/auth"
 )
 
 type Auth struct {

@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/model"
 )
 
 func (r *Repository) FetchCategoryExtended(ctx context.Context, categoryID int64) (model.CategoryExtended, error) {

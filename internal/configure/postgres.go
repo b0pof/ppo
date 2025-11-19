@@ -8,7 +8,7 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/jmoiron/sqlx"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/config"
+	"github.com/b0pof/ppo/internal/config"
 )
 
 func MustInitPostgres(ctx context.Context, cfg config.PostgresConfig) *sqlx.DB {

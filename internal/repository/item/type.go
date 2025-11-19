@@ -1,6 +1,6 @@
 package item
 
-import "git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+import "github.com/b0pof/ppo/internal/model"
 
 type itemRow struct {
 	ID          int64  `db:"id"`

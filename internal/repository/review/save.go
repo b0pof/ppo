@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/model"
 )
 
 func (r *Repository) AddReview(ctx context.Context, review model.Review) (int64, error) {

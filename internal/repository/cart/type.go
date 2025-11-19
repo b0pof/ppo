@@ -1,6 +1,6 @@
 package cart
 
-import "git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+import "github.com/b0pof/ppo/internal/model"
 
 type cartItemRow struct {
 	ID     int64  `db:"id"`

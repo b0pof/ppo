@@ -3,7 +3,7 @@ package configure
 import (
 	"github.com/go-redis/redis"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/config"
+	"github.com/b0pof/ppo/internal/config"
 )
 
 const defaultDB = 0

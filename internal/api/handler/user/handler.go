@@ -1,6 +1,6 @@
 package user
 
-import usecase "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/user"
+import usecase "github.com/b0pof/ppo/internal/usecase/user"
 
 type User struct {
 	user usecase.IUserUsecase

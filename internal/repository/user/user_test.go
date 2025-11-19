@@ -9,8 +9,8 @@ import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	. "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/user"
+	"github.com/b0pof/ppo/internal/model"
+	. "github.com/b0pof/ppo/internal/repository/user"
 )
 
 type UserRepository struct {

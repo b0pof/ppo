@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+
+	"github.com/b0pof/ppo/internal/model"
 )
 
 func (r *Repository) DeleteCartItem(ctx context.Context, userID int64, itemID int64) (int, error) {

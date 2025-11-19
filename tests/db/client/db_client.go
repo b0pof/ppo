@@ -11,8 +11,8 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/config"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/configure"
+	"github.com/b0pof/ppo/internal/config"
+	"github.com/b0pof/ppo/internal/configure"
 )
 
 const (
@@ -37,7 +37,7 @@ func DbConnect() *sqlx.DB {
 		Port:     "5433",
 		User:     "postgres",
 		Password: "postgres",
-		Database: "postgres",
+		Database: "master",
 		Sslmode:  "disable",
 	})
 }

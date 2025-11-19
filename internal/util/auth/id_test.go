@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	. "git.iu7.bmstu.ru/kia22u475/ppo/internal/util/auth"
+	. "github.com/b0pof/ppo/internal/util/auth"
 )
 
 func TestWithUserID(t *testing.T) {

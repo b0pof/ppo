@@ -3,7 +3,8 @@ package user
 
 import (
 	"context"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+
+	"github.com/b0pof/ppo/internal/model"
 )
 
 type userRepo interface {

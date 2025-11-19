@@ -1,14 +1,14 @@
 package handler
 
 import (
-	authHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/auth"
-	cartHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/cart"
-	categoryHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/category"
-	itemHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/item"
-	orderHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/order"
-	reviewHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/review"
-	sellerHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/seller"
-	userHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/user"
+	authHandler "github.com/b0pof/ppo/internal/api/handler/auth"
+	cartHandler "github.com/b0pof/ppo/internal/api/handler/cart"
+	categoryHandler "github.com/b0pof/ppo/internal/api/handler/category"
+	itemHandler "github.com/b0pof/ppo/internal/api/handler/item"
+	orderHandler "github.com/b0pof/ppo/internal/api/handler/order"
+	reviewHandler "github.com/b0pof/ppo/internal/api/handler/review"
+	sellerHandler "github.com/b0pof/ppo/internal/api/handler/seller"
+	userHandler "github.com/b0pof/ppo/internal/api/handler/user"
 )
 
 type Handler struct {

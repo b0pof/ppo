@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	authMiddleware "git.iu7.bmstu.ru/kia22u475/ppo/internal/middleware/auth"
 	"log/slog"
 	"net/http"
 	"os"
@@ -11,39 +10,48 @@ import (
 	"syscall"
 	"time"
 
+	apiMiddleware "github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 
-	apiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler"
-	authApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/auth"
-	cartApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/cart"
-	categoryApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/category"
-	itemApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/item"
-	orderApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/order"
-	reviewApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/review"
-	sellerApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/seller"
-	userApiHandler "git.iu7.bmstu.ru/kia22u475/ppo/internal/api/handler/user"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/config"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/configure"
-	sdk "git.iu7.bmstu.ru/kia22u475/ppo/internal/generated"
-	permissionMiddleware "git.iu7.bmstu.ru/kia22u475/ppo/internal/middleware/permission"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	authRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/auth"
-	cartRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/cart"
-	categoryRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/category"
-	itemRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/item"
-	orderRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/order"
-	reviewRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/review"
-	userRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/user"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/server"
-	authUc "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/auth"
-	cartUc "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/cart"
-	itemUc "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/item"
-	orderUc "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/order"
-	userUc "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/user"
+	apiHandler "github.com/b0pof/ppo/internal/api/handler"
+	authApiHandler "github.com/b0pof/ppo/internal/api/handler/auth"
+	cartApiHandler "github.com/b0pof/ppo/internal/api/handler/cart"
+	categoryApiHandler "github.com/b0pof/ppo/internal/api/handler/category"
+	itemApiHandler "github.com/b0pof/ppo/internal/api/handler/item"
+	orderApiHandler "github.com/b0pof/ppo/internal/api/handler/order"
+	reviewApiHandler "github.com/b0pof/ppo/internal/api/handler/review"
+	sellerApiHandler "github.com/b0pof/ppo/internal/api/handler/seller"
+	userApiHandler "github.com/b0pof/ppo/internal/api/handler/user"
+	"github.com/b0pof/ppo/internal/config"
+	"github.com/b0pof/ppo/internal/configure"
+	sdk "github.com/b0pof/ppo/internal/generated"
+	authMiddleware "github.com/b0pof/ppo/internal/middleware/auth"
+	observabilityMiddleware "github.com/b0pof/ppo/internal/middleware/observability"
+	permissionMiddleware "github.com/b0pof/ppo/internal/middleware/permission"
+	"github.com/b0pof/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/pkg/metrics"
+	authRepo "github.com/b0pof/ppo/internal/repository/auth"
+	cartRepo "github.com/b0pof/ppo/internal/repository/cart"
+	categoryRepo "github.com/b0pof/ppo/internal/repository/category"
+	itemRepo "github.com/b0pof/ppo/internal/repository/item"
+	orderRepo "github.com/b0pof/ppo/internal/repository/order"
+	reviewRepo "github.com/b0pof/ppo/internal/repository/review"
+	userRepo "github.com/b0pof/ppo/internal/repository/user"
+	"github.com/b0pof/ppo/internal/server"
+	authUc "github.com/b0pof/ppo/internal/usecase/auth"
+	cartUc "github.com/b0pof/ppo/internal/usecase/cart"
+	itemUc "github.com/b0pof/ppo/internal/usecase/item"
+	orderUc "github.com/b0pof/ppo/internal/usecase/order"
+	userUc "github.com/b0pof/ppo/internal/usecase/user"
 )
 
 const timeout = 3 * time.Second
+
+////go:embed api/schema.yml
+//var spec embed.FS
 
 func main() {
 	cfg := config.MustLoad()
@@ -56,6 +64,8 @@ func main() {
 	db := configure.MustInitPostgres(ctx, cfg.Postgres)
 
 	redis := configure.MustInitRedis(cfg.Redis)
+
+	reg := prometheus.NewRegistry()
 
 	// <! Repositories
 	authRepository := authRepo.New(redis, authRepo.WithSessionTTL(cfg.Service.SessionTTL))
@@ -77,10 +87,37 @@ func main() {
 
 	// <! Router
 	r := mux.NewRouter()
+	// !!>
 
-	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
-		http.Error(w, `Not found`, 404)
+	specData, err := os.ReadFile("api/schema.yml")
+	if err != nil {
+		panic(err)
+	}
+
+	r.Handle("/api/schema.yml", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/yaml")
+		_, _ = w.Write(specData)
+	}))
+
+	opts := apiMiddleware.SwaggerUIOpts{
+		Path:    "/docs",
+		SpecURL: "/api/schema.yml",
+		Title:   "API Documentation",
+	}
+
+	r.Handle("/docs/", apiMiddleware.SwaggerUI(opts, nil))
+
+	r.NotFoundHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println(r.URL)
+		http.Error(w, `Not found!`, 404)
 	})
+
+	r.Handle("/public/metrics", promhttp.HandlerFor(
+		reg,
+		promhttp.HandlerOpts{
+			Registry: reg,
+		},
+	))
 	// !>
 
 	// <! Permissions
@@ -100,7 +137,8 @@ func main() {
 		AllowCredentials: true,
 	})
 	r.Use(authMiddleware.New(authUsecase, userUsecase))
-	r.Use(permsMiddleware.New())
+	r.Use(observabilityMiddleware.New(metrics.NewMetrics(reg), log))
+	//r.Use(permsMiddleware.New())
 	// !>
 
 	// <! Handlers

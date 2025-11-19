@@ -5,12 +5,12 @@ import (
 	"errors"
 	"testing"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	. "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/cart"
-
 	"github.com/golang/mock/gomock"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
+
+	"github.com/b0pof/ppo/internal/model"
+	. "github.com/b0pof/ppo/internal/usecase/cart"
 )
 
 type CartUsecase struct {

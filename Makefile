@@ -1,11 +1,14 @@
 POSTGRES_USER := postgres
 POSTGRES_PASSWORD := postgres
 DB_HOST := 127.0.0.1
+
 DB_PORT := 5432
 DB_NAME := master
 
 TEST_DB_PORT := 5433
 TEST_DB_NAME := postgres
+
+APP_PORT := 8080
 
 DB_DSN="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?sslmode=disable"
 TEST_DB_DSN="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(TEST_DB_PORT)/$(TEST_DB_NAME)?sslmode=disable"
@@ -14,7 +17,11 @@ API_SCHEMA="api/schema.yml"
 
 .PHONY: api
 api: ## Открыть схему контракта API в браузере
-	@swgui ./api/schema.yml
+	@swgui $(API_SCHEMA)
+
+.PHONY: httpcli
+httpcli: ## Сбилдить бинарь для httpcli
+	@go build -o httpcli cmd/httpcli/main.go
 
 .PHONY: codegen
 codegen: ## Сгенерировать код по документации API
@@ -59,13 +66,22 @@ test: ## Запустить юнит-тесты
 
 ALLURE_RESULTS_DIR := $(PWD)
 
-.PHONY: test-report
-test-report: ## Запустить тесты с генерацией отчета Allure
-	@rm -r $(ALLURE_RESULTS_DIR)/allure-results
-	@mkdir -p $(ALLURE_RESULTS_DIR)
-	@ALLURE_OUTPUT_PATH=$(ALLURE_RESULTS_DIR) go test ./...
-	@allure generate ./allure-results -o ./allure-report --clean
-	@allure open ./allure-report
+.PHONY: unit-test
+unit-test: ## Запустить тесты с генерацией отчета Allure
+	@go test -json ./... | golurectl -l -e -o report/unit-allure-results --allure-suite Unit --allure-tags UNIT
+
+.PHONY: report-merge
+report-merge: ## Подготовить финальный отчет
+	@mkdir -p report/allure-results
+	@cp -r report/unit-allure-results/* report/allure-results/ 2>/dev/null || :
+	@cp -r report/int-allure-results/* report/allure-results/ 2>/dev/null || :
+	@cp -r report/e2e-allure-results/* report/allure-results/ 2>/dev/null || :
+
+.PHONY: report-open
+report-open: ## Открыть отчет
+	@make report-merge
+	@allure generate ./report/allure-results -o ./report/report --clean
+	@allure open ./report/report
 
 .PHONY: test-random
 test-random: ## Запустить юнит-тесты в рандомном порядке
@@ -83,23 +99,31 @@ integration-test: ## Запустить интеграционные тесты
 	@sleep 5s
 	@echo 'Applying migrations...'
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
-	@rm -r $(ALLURE_RESULTS_DIR)/allure-results
-	@mkdir -p $(ALLURE_RESULTS_DIR)
-	@ALLURE_OUTPUT_PATH=$(ALLURE_RESULTS_DIR) go test -tags=integration ./tests/integration/...
-	@allure generate ./allure-results -o ./allure-report --clean
-	@allure open ./allure-report
+	@go test -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/int-allure-results --allure-suite Integration --allure-tags INTEGRATION
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты
-	@docker compose -f tests/docker-compose.e2e.yml up --build --abort-on-container-exit
+	@lsof -ti:$(APP_PORT) | xargs -r kill -9
+	@docker compose -f tests/docker-compose.e2e.yml up -d
+	@sleep 3
+	@POSTGRES_PORT=5433 go run cmd/service/main.go & \
+		sleep 3; \
+		go test -json -tags=e2e ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E; \
+		TEST_EXIT_CODE=$$?; \
+		lsof -ti:$(APP_PORT) | xargs -r kill -9
+		exit $$TEST_EXIT_CODE
+
+.PHONY: e2e-down
+e2e-down: ## Удалить окружение е2е тестов
 	@docker compose -f tests/docker-compose.e2e.yml down
-	@mkdir -p tests/allure-report
-	@allure generate tests/allure-results -o tests/allure-report --clean
-	@allure open tests/allure-report
 
 .PHONY: integration-down
-integration-down: ## Запустить интеграционные тесты
+integration-down: ## Удалить окружение интеграционных тестов
 	@docker compose -f tests/docker-compose.yml down
+
+.PHONY: deps
+deps: ## Установить зависимости
+	@go install github.com/robotomize/go-allure/cmd/golurectl@latest
 
 .PHONY: cli
 cli: ## Собрать бинарь для CLI

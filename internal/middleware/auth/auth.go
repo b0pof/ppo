@@ -6,10 +6,10 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	authUtil "git.iu7.bmstu.ru/kia22u475/ppo/internal/util/auth"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/cookie"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
+	"github.com/b0pof/ppo/internal/model"
+	authUtil "github.com/b0pof/ppo/internal/util/auth"
+	"github.com/b0pof/ppo/internal/util/cookie"
+	"github.com/b0pof/ppo/internal/util/http/response"
 )
 
 func New(auth auth, user user) mux.MiddlewareFunc {

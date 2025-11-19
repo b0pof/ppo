@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/db/client"
+	"github.com/b0pof/ppo/tests/db/client"
 )
 
 type Controller struct {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/model"
 )
 
 func (r *Repository) Create(ctx context.Context, login string, password string, role string) (int64, error) {

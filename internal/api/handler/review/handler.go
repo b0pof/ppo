@@ -1,6 +1,6 @@
 package review
 
-import "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/review"
+import "github.com/b0pof/ppo/internal/repository/review"
 
 type Review struct {
 	review *review.Repository

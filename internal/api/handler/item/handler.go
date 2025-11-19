@@ -1,6 +1,6 @@
 package item
 
-import usecase "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/item"
+import usecase "github.com/b0pof/ppo/internal/usecase/item"
 
 type Item struct {
 	item usecase.IItemUsecase

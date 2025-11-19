@@ -4,10 +4,10 @@ import (
 	"errors"
 	"net/http"
 
-	dto "git.iu7.bmstu.ru/kia22u475/ppo/internal/generated"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/request"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
+	dto "github.com/b0pof/ppo/internal/generated"
+	"github.com/b0pof/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/util/http/request"
+	"github.com/b0pof/ppo/internal/util/http/response"
 )
 
 func (h *User) PutApi1UsersId(w http.ResponseWriter, r *http.Request, id int64) {

@@ -3,11 +3,12 @@ package response_test
 import (
 	"bytes"
 	"encoding/json"
-	. "git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
 	"net/http"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	. "github.com/b0pof/ppo/internal/util/http/response"
 )
 
 type customResponseWriter struct {

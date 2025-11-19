@@ -8,11 +8,11 @@ import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	authRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/auth"
-	userRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/user"
-	authUsecase "git.iu7.bmstu.ru/kia22u475/ppo/internal/usecase/auth"
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/controller"
+	"github.com/b0pof/ppo/internal/model"
+	authRepo "github.com/b0pof/ppo/internal/repository/auth"
+	userRepo "github.com/b0pof/ppo/internal/repository/user"
+	authUsecase "github.com/b0pof/ppo/internal/usecase/auth"
+	"github.com/b0pof/ppo/tests/controller"
 )
 
 type AuthTest struct {

@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	model "git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+	model "github.com/b0pof/ppo/internal/model"
 	gomock "github.com/golang/mock/gomock"
 )
 

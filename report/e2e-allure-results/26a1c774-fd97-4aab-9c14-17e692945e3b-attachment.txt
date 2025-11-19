@@ -1,0 +1,15 @@
+=== RUN   TestSuite/CreateOrderFlow/Tests
+=== RUN   TestSuite/CreateOrderFlow/Tests/TestOrderCreationFlow
+db_client.go:111: Cleanup for test TestOrderCreationFlow finished in 11.526917ms
+db_client.go:147: Failed to prepare DB for test TestOrderCreationFlow, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+db_client.go:147: Failed to prepare DB for test TestOrderCreationFlow, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+db_client.go:147: Failed to prepare DB for test TestOrderCreationFlow, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+controller.go:37: 
+	Error Trace:	/Users/iakovalev/Desktop/temp/ppo/tests/controller/controller.go:37
+	            				/Users/iakovalev/Desktop/temp/ppo/tests/e2e/scenario/create_order_flow_test.go:26
+	Error:      	Received unexpected error:
+	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+	Test:       	TestOrderCreationFlow
+	Messages:   	db preparation failed
+--- FAIL: TestSuite/CreateOrderFlow/Tests (0.73s)
+    --- FAIL: TestSuite/CreateOrderFlow/Tests/TestOrderCreationFlow (0.73s)

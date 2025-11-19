@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f0f8ff;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .nav-item {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            text-align: center;
+            transition: background 0.3s;
+        }
+        .nav-item:hover {
+            background: #2980b9;
+        }
+        .description {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Панель управления</h1>
+
+    <div class="nav-grid">
+        <a href="/" class="nav-item">
+            Главная страница
+            <div class="description">Статика / SPA</div>
+        </a>
+
+        <a href="/api/v1" class="nav-item">
+            Документация API
+            <div class="description">Swagger Docs</div>
+        </a>
+
+        <a href="/documentation" class="nav-item">
+            Readme.md
+            <div class="description">Документация в сыром виде</div>
+        </a>
+
+        <a href="/reserved/" class="nav-item">
+            Reserved area
+            <div class="description">То же что и главная</div>
+        </a>
+
+        <a href="/admin/" class="nav-item">
+            Админка БД
+            <div class="description">pgAdmin</div>
+        </a>
+
+        <a href="/status" class="nav-item">
+            Статус сервера
+            <div class="description">Nginx metrics</div>
+        </a>
+
+        <a href="/download/cli" class="nav-item">
+            Скачать CLI
+            <div class="description">Скачать CLI</div>
+        </a>
+    </div>
+</div>
+</body>
+</html>

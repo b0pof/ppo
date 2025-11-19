@@ -5,7 +5,8 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
+
+	"github.com/b0pof/ppo/internal/model"
 )
 
 func (r *Repository) GetCartItemsAmount(ctx context.Context, userID int64) (int, error) {
@@ -38,9 +39,9 @@ func (r *Repository) GetCartContentByUserID(ctx context.Context, userID int64) (
 		return model.CartContent{}, fmt.Errorf("item repository.GetCartItemsByUserID: %w", err)
 	}
 
-	if len(cartItems) == 0 {
-		return model.CartContent{}, model.ErrNotFound
-	}
+	//if len(cartItems) == 0 {
+	//	return model.CartContent{}, model.ErrNotFound
+	//}
 
 	var totalPrice int
 	var totalCount int

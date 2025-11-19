@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	passwordUtil "git.iu7.bmstu.ru/kia22u475/ppo/internal/util/password"
+	"github.com/b0pof/ppo/internal/model"
+	passwordUtil "github.com/b0pof/ppo/internal/util/password"
 )
 
 type IAuthUsecase interface {

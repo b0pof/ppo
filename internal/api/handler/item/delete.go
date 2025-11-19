@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/util/http/response"
+	"github.com/b0pof/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/util/http/response"
 )
 
 func (h *Item) DeleteApi1ItemsId(w http.ResponseWriter, r *http.Request, id int64) {

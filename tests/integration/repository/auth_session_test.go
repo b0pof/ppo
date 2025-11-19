@@ -6,8 +6,8 @@ import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	authRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/auth"
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/controller"
+	authRepo "github.com/b0pof/ppo/internal/repository/auth"
+	"github.com/b0pof/ppo/tests/controller"
 )
 
 type SessionCreateDelete struct {

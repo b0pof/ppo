@@ -6,9 +6,9 @@ import (
 	"context"
 	"time"
 
-	"git.iu7.bmstu.ru/kia22u475/ppo/internal/model"
-	orderRepo "git.iu7.bmstu.ru/kia22u475/ppo/internal/repository/order"
-	"git.iu7.bmstu.ru/kia22u475/ppo/tests/controller"
+	"github.com/b0pof/ppo/internal/model"
+	orderRepo "github.com/b0pof/ppo/internal/repository/order"
+	"github.com/b0pof/ppo/tests/controller"
 
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
