@@ -152,7 +152,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_PAGES_PAT }}
           publish_branch: gh-pages
           publish_dir: gh-pages
           force_orphan: true
