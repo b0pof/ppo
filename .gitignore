@@ -6,6 +6,8 @@ allure-results
 temp
 report
 
+log.json
+
 testresult.txt
 
 # Binaries for programs and plugins
