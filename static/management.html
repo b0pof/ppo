@@ -46,6 +46,37 @@
             opacity: 0.9;
             margin-top: 5px;
         }
+
+        /* --- Code block for installing CLI --- */
+        .code-container {
+            position: relative;
+            margin-top: 25px;
+        }
+        .code-box {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.95em;
+            overflow-x: auto;
+        }
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            padding: 6px 10px;
+            background: #3498db;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover {
+            background: #2980b9;
+        }
     </style>
 </head>
 <body>
@@ -83,11 +114,32 @@
             <div class="description">Nginx metrics</div>
         </a>
 
+        <!-- Новая кнопка "Скачать CLI" -->
         <a href="/download/cli" class="nav-item">
             Скачать CLI
             <div class="description">Скачать CLI</div>
         </a>
     </div>
+
+    <!-- Code block with copy button -->
+    <div class="code-container">
+        <button class="copy-btn" onclick="copyCode()">Копировать</button>
+        <div class="code-box" id="code">
+            go install github.com/b0pof/ppo/cmd/httpcli@latest
+        </div>
+    </div>
 </div>
+
+<script>
+    function copyCode() {
+        const code = document.getElementById("code").innerText.trim();
+        navigator.clipboard.writeText(code).then(() => {
+            const btn = document.querySelector(".copy-btn");
+            btn.innerText = "Скопировано!";
+            setTimeout(() => btn.innerText = "Копировать", 1500);
+        });
+    }
+</script>
+
 </body>
 </html>

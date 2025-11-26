@@ -37,7 +37,7 @@ func DbConnect() *sqlx.DB {
 		Port:     "5433",
 		User:     "postgres",
 		Password: "postgres",
-		Database: "master",
+		Database: "postgres",
 		Sslmode:  "disable",
 	})
 }

@@ -99,7 +99,7 @@ integration-test: ## Запустить интеграционные тесты
 	@sleep 5s
 	@echo 'Applying migrations...'
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
-	@go test -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/int-allure-results --allure-suite Integration --allure-tags INTEGRATION
+	@go test -p 1 -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/int-allure-results --allure-suite Integration --allure-tags INTEGRATION
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты

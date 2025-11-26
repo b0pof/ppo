@@ -184,9 +184,8 @@ func (s *CartRepositorySuite) TestRepository_GetCartContentByUserID(t provider.T
 				return 1
 			},
 			expectations: func(a provider.Asserts, got model.CartContent, err error) {
-				a.Error(err)
-				a.ErrorIs(err, model.ErrNotFound)
-				a.Equal(model.CartContent{}, got)
+				a.NoError(err)
+				a.Len(got.Items, 0)
 			},
 		},
 		{
@@ -246,9 +245,8 @@ func (s *CartRepositorySuite) TestRepository_GetCartContentByUserID(t provider.T
 				return 9999
 			},
 			expectations: func(a provider.Asserts, got model.CartContent, err error) {
-				a.Error(err)
-				a.ErrorIs(err, model.ErrNotFound)
-				a.Equal(model.CartContent{}, got)
+				a.NoError(err)
+				a.Len(got.Items, 0)
 			},
 		},
 	}

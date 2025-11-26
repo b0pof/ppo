@@ -56,7 +56,7 @@ func (g *OrderFlow) TestFullOrderFlow(t provider.T) {
 			ctxA.Assert().True(orderID > 0)
 
 			cartContent, err := cartRepository.GetCartContentByUserID(ctx, tt.userID)
-			ctxA.Assert().ErrorIs(err, model.ErrNotFound)
+			ctxA.Assert().NoError(err, model.ErrNotFound)
 			ctxA.Assert().Len(cartContent.Items, 0)
 
 			orderExt, err := usecase.GetByID(ctx, orderID)

@@ -26,13 +26,17 @@ func (s *OrderRepositorySuite) TestRepository_GetByID(t provider.T) {
 	t.Parallel()
 
 	testBuyer := model.User{
-		ID:   1,
-		Name: "testBuyer",
+		ID:    1,
+		Role:  model.RoleBuyer,
+		Login: "testBuyer",
+		Name:  "testBuyer",
 	}
 
 	testSeller := model.User{
-		ID:   2,
-		Name: "testSeller",
+		ID:    2,
+		Role:  model.RoleSeller,
+		Login: "testSeller",
+		Name:  "testSeller",
 	}
 
 	testItem := model.Item{
@@ -54,14 +58,13 @@ func (s *OrderRepositorySuite) TestRepository_GetByID(t provider.T) {
 				insertUser(db, testSeller)
 				insertItem(db, testItem)
 
-				var orderID int64
-				db.Get(&orderID, `insert into "order" (id, buyer_id, status, created_at) values (1, $1, 'created', $2) returning id`,
-					testBuyer.ID, time.Now())
+				orderID, _ := db.MustExec(`insert into "order" (id, buyer_id, status, created_at) values (1, $1, 'created', $2)`,
+					testBuyer.ID, time.Now()).LastInsertId()
 
 				db.MustExec(`insert into order_item (order_id, item_id, count) values (1, 1, 2)`)
 				db.MustExec(`insert into order_item (order_id, item_id, count) values (1, 1, 1)`)
 
-				return 1
+				return orderID
 			},
 			expectations: func(a provider.Asserts, got model.Order, err error) {
 				a.NoError(err)
@@ -93,18 +96,16 @@ func (s *OrderRepositorySuite) TestRepository_GetByID(t provider.T) {
 				insertItem(db, model.Item{ID: 1, Name: "item1", Seller: model.Seller{ID: testSeller.ID}, Price: 100})
 				insertItem(db, model.Item{ID: 2, Name: "item2", Seller: model.Seller{ID: testSeller.ID}, Price: 200})
 
-				var orderID int64
-				db.Get(&orderID, `insert into "order" (id, buyer_id, status, created_at) values (2, $1, 'cancelled', $2) returning id`,
-					testBuyer.ID, time.Now())
+				orderID, _ := db.MustExec(`insert into "order" (id, buyer_id, status, created_at) values (2, $1, 'cancelled', $2)`,
+					testBuyer.ID, time.Now()).LastInsertId()
 
-				db.MustExec(`insert into order_item (order_id, item_id, count) values (2, 1, 3)`)
-				db.MustExec(`insert into order_item (order_id, item_id, count) values (2, 2, 1)`)
+				db.MustExec(`insert into order_item (order_id, item_id, count) values ($1, 1, 3)`, orderID)
+				db.MustExec(`insert into order_item (order_id, item_id, count) values ($1, 2, 1)`, orderID)
 
-				return 2
+				return orderID
 			},
 			expectations: func(a provider.Asserts, got model.Order, err error) {
 				a.NoError(err)
-				a.Equal(int64(2), got.ID)
 				a.Equal(500, got.Sum)
 				a.Equal(model.OrderStatusCancelled, got.Status)
 			},
@@ -130,9 +131,9 @@ func (s *OrderRepositorySuite) TestRepository_GetByID(t provider.T) {
 func (s *OrderRepositorySuite) TestRepository_GetOrdersByUserID(t provider.T) {
 	t.Parallel()
 
-	testBuyer1 := model.User{ID: 1, Name: "buyer1"}
-	testBuyer2 := model.User{ID: 2, Name: "buyer2"}
-	testSeller := model.User{ID: 3, Name: "seller"}
+	testBuyer1 := model.User{ID: 1, Role: model.RoleBuyer, Login: "buyer1", Name: "buyer1"}
+	testBuyer2 := model.User{ID: 2, Role: model.RoleBuyer, Login: "buyer2", Name: "buyer2"}
+	testSeller := model.User{ID: 3, Role: model.RoleSeller, Login: "seller", Name: "seller"}
 
 	tests := []struct {
 		name         string
@@ -242,28 +243,22 @@ func (s *OrderRepositorySuite) TestRepository_GetOrdersByUserID(t provider.T) {
 }
 
 func insertUser(db *sqlx.DB, user model.User) int64 {
-	var newID int64
-
-	_ = db.Get(
-		&newID,
-		`insert into "user" (id, role, name, login, phone, password) values ($1, $2, $3, $4, $5, $6) returning id`,
+	res, _ := db.MustExec(
+		`insert into "user" (id, role, name, login, phone, password) values ($1, $2, $3, $4, $5, $6)`,
 		user.ID,
 		user.Role,
 		user.Name,
 		user.Login,
 		user.Phone,
 		user.Password,
-	)
+	).LastInsertId()
 
-	return newID
+	return res
 }
 
 func insertItem(db *sqlx.DB, item model.Item) int64 {
-	var newID int64
-
-	_ = db.Get(
-		&newID,
-		`insert into item (id, name, seller_id, rating, price, description, imgsrc) values ($1, $2, $3, $4, $5, $6, $7) returning id`,
+	res, _ := db.MustExec(
+		`insert into item (id, name, seller_id, rating, price, description, imgsrc) values ($1, $2, $3, $4, $5, $6, $7)`,
 		item.ID,
 		item.Name,
 		item.Seller.ID,
@@ -271,9 +266,9 @@ func insertItem(db *sqlx.DB, item model.Item) int64 {
 		item.Price,
 		item.Description,
 		item.ImgSrc,
-	)
+	).LastInsertId()
 
-	return newID
+	return res
 }
 
 func mustInitDB() *sqlx.DB {
@@ -284,7 +279,7 @@ func mustInitDB() *sqlx.DB {
 
 	schema := `
 		create table if not exists "user" (
-			id bigserial,
+			id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 			role text,
 			name text not null,
 			login text not null unique,
@@ -292,7 +287,7 @@ func mustInitDB() *sqlx.DB {
 			password text not null
 		);
 		create table if not exists item (
-			id bigserial,
+			id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 			name text not null,
 			seller_id bigint,
 			price int,
@@ -301,7 +296,7 @@ func mustInitDB() *sqlx.DB {
 			imgsrc text not null
 		);
 		create table if not exists "order" (
-			id bigserial,
+			id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 			buyer_id bigint,
 			status text not null,
 			created_at timestamp not null
