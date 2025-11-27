@@ -94,6 +94,7 @@ test-trace: ## Запустить тесты с трейсингом по тре
 
 .PHONY: integration-test
 integration-test: ## Запустить интеграционные тесты
+	@make deps
 	@docker compose -f tests/docker-compose.yml up -d
 	@echo 'Starting environment...'
 	@sleep 5s
@@ -103,6 +104,7 @@ integration-test: ## Запустить интеграционные тесты
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты
+	@make deps
 	@lsof -ti:$(APP_PORT) | xargs -r kill -9
 	@docker compose -f tests/docker-compose.e2e.yml up -d
 	@sleep 3
@@ -126,6 +128,7 @@ integration-down: ## Удалить окружение интеграционн�
 .PHONY: deps
 deps: ## Установить зависимости
 	@go install github.com/robotomize/go-allure/cmd/golurectl@latest
+	@go install github.com/pressly/goose/v3/cmd/goose@latest
 
 .PHONY: cli
 cli: ## Собрать бинарь для CLI
