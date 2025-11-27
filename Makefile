@@ -74,7 +74,7 @@ unit-test: ## Запустить тесты с генерацией отчета
 report-merge: ## Подготовить финальный отчет
 	@mkdir -p report/allure-results
 	@cp -r report/unit-allure-results/* report/allure-results/ 2>/dev/null || :
-	@cp -r report/int-allure-results/* report/allure-results/ 2>/dev/null || :
+	@cp -r report/integration-allure-results/* report/allure-results/ 2>/dev/null || :
 	@cp -r report/e2e-allure-results/* report/allure-results/ 2>/dev/null || :
 
 .PHONY: report-open
@@ -99,12 +99,14 @@ integration-test: ## Запустить интеграционные тесты
 	@sleep 5s
 	@echo 'Applying migrations...'
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
-	@go test -p 1 -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/int-allure-results --allure-suite Integration --allure-tags INTEGRATION
+	@go test -p 1 -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/integration-allure-results --allure-suite Integration --allure-tags INTEGRATION
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты
 	@lsof -ti:$(APP_PORT) | xargs -r kill -9
 	@docker compose -f tests/docker-compose.e2e.yml up -d
+	@sleep 3
+	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
 	@POSTGRES_PORT=5433 go run cmd/service/main.go & \
 		sleep 3; \

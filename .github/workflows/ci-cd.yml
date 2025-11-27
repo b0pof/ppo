@@ -55,8 +55,10 @@ jobs:
 
       - name: Run Integration Tests
         run: |
-          mkdir -p report/integration-allure-results
-          go test -p 1 -json ./tests/integration/... | golurectl -l -e -o report/integration-allure-results --allure-suite Integration --allure-tags INTEGRATION
+          make integration-test
+#        run: |
+#          mkdir -p report/integration-allure-results
+#          go test -p 1 -json ./tests/integration/... | golurectl -l -e -o report/integration-allure-results --allure-suite Integration --allure-tags INTEGRATION
 
       - name: Upload Integration Allure Results
         uses: actions/upload-artifact@v4
