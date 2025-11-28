@@ -68,7 +68,7 @@ ALLURE_RESULTS_DIR := $(PWD)
 
 .PHONY: unit-test
 unit-test: ## Запустить тесты с генерацией отчета Allure
-	@go test -json ./... | golurectl -l -e -o report/unit-allure-results --allure-suite Unit --allure-tags UNIT
+	@go test -json internal/... | golurectl -l -e -o report/unit-allure-results --allure-suite Unit --allure-tags UNIT
 
 .PHONY: report-merge
 report-merge: ## Подготовить финальный отчет
