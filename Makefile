@@ -72,10 +72,12 @@ unit-test: ## Запустить тесты с генерацией отчета
 
 .PHONY: report-merge
 report-merge: ## Подготовить финальный отчет
+	@rm -rf report/allure-results
 	@mkdir -p report/allure-results
-	@cp -r report/unit-allure-results/* report/allure-results/ 2>/dev/null || :
-	@cp -r report/integration-allure-results/* report/allure-results/ 2>/dev/null || :
-	@cp -r report/e2e-allure-results/* report/allure-results/ 2>/dev/null || :
+	@cp -r report/unit-allure-results/* report/allure-results/ 2>/dev/null || echo "No unit results"
+	@cp -r report/integration-allure-results/* report/allure-results/ 2>/dev/null || echo "No integration results"
+	@cp -r report/e2e-allure-results/* report/allure-results/ 2>/dev/null || echo "No e2e results"
+	@echo "Total files: $(shell find report/allure-results -type f 2>/dev/null | wc -l)"
 
 .PHONY: report-open
 report-open: ## Открыть отчет
@@ -97,7 +99,7 @@ integration-test: ## Запустить интеграционные тесты
 	@make deps
 	@docker compose -f tests/docker-compose.yml up -d
 	@echo 'Starting environment...'
-	@sleep 5s
+	@sleep 3s
 	@echo 'Applying migrations...'
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@go test -p 1 -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/integration-allure-results --allure-suite Integration --allure-tags INTEGRATION
@@ -110,9 +112,9 @@ e2e-test: ## Запустить e2e тесты
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
-	@POSTGRES_PORT=5433 go run cmd/service/main.go & \
+	@POSTGRES_PORT=5433 POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
-		go test -json -tags=e2e ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E; \
+		go test -json -p 1 -tags=e2e ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E; \
 		TEST_EXIT_CODE=$$?; \
 		lsof -ti:$(APP_PORT) | xargs -r kill -9
 		exit $$TEST_EXIT_CODE

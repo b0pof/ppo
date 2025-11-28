@@ -1,6 +1,4 @@
-//go:build integration
-
-package repository
+package repository_test
 
 import (
 	"testing"
@@ -9,9 +7,9 @@ import (
 )
 
 func TestSuite(t *testing.T) {
-	suite.RunSuite(t, new(ItemFlow))
-	suite.RunSuite(t, new(CartFlow))
-	suite.RunSuite(t, new(SessionCreateDelete))
-	suite.RunSuite(t, new(OrderFlow))
-	suite.RunSuite(t, new(UserFlow))
+	suite.RunSuite(t, new(RepoItemFlow))
+	suite.RunSuite(t, new(RepoCartFlow))
+	suite.RunSuite(t, new(RepoSessionCreateDelete))
+	suite.RunSuite(t, new(RepoOrderFlow))
+	suite.RunSuite(t, new(RepoUserFlow))
 }

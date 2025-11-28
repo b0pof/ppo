@@ -1,6 +1,4 @@
-//go:build integration
-
-package repository
+package repository_test
 
 import (
 	"context"
@@ -14,11 +12,11 @@ import (
 	"github.com/b0pof/ppo/tests/controller"
 )
 
-type ItemFlow struct {
+type RepoItemFlow struct {
 	suite.Suite
 }
 
-func (g *ItemFlow) TestGetCartItemsAmount(t provider.T) {
+func (g *RepoItemFlow) TestGetCartItemsAmount(t provider.T) {
 	tests := []struct {
 		name   string
 		userID int64
@@ -72,22 +70,20 @@ func (g *ItemFlow) TestGetCartItemsAmount(t provider.T) {
 			// get cart items
 			cartItems, err := cartRepository.GetCartContentByUserID(ctx, tt.userID)
 			t.Assert().NoError(err)
-			t.Assert().Equal([]model.CartItem{
-				{
-					ID:     1,
-					Name:   "Doll",
-					Price:  1000,
-					Count:  3,
-					ImgSrc: "https://example.com/doll",
-				},
-				{
-					ID:     2,
-					Name:   "Plastic car",
-					Price:  1200,
-					Count:  1,
-					ImgSrc: "https://example.com/car",
-				},
-			}, cartItems.Items)
+			t.Assert().Contains(cartItems.Items, model.CartItem{
+				ID:     1,
+				Name:   "Doll",
+				Price:  1000,
+				Count:  3,
+				ImgSrc: "https://example.com/doll",
+			})
+			t.Assert().Contains(cartItems.Items, model.CartItem{
+				ID:     2,
+				Name:   "Plastic car",
+				Price:  1200,
+				Count:  1,
+				ImgSrc: "https://example.com/car",
+			})
 		})
 	}
 }

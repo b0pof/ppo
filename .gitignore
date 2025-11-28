@@ -4,7 +4,7 @@
 allure-report
 allure-results
 temp
-report
+report/*
 
 log.json
 

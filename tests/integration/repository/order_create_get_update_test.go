@@ -1,6 +1,4 @@
-//go:build integration
-
-package repository
+package repository_test
 
 import (
 	"context"
@@ -18,11 +16,11 @@ const (
 	timeParseLayout = "2006-01-02 15:04:05.999999 -07:00"
 )
 
-type OrderFlow struct {
+type RepoOrderFlow struct {
 	suite.Suite
 }
 
-func (g *OrderFlow) TestOrder(t provider.T) {
+func (g *RepoOrderFlow) TestOrder(t provider.T) {
 	tests := []struct {
 		name    string
 		userID  int64

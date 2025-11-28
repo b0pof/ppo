@@ -29,7 +29,7 @@ type PostgresConfig struct {
 	Port         string `yaml:"port" env:"POSTGRES_PORT"`
 	User         string `yaml:"user" env:"POSTGRES_USER"`
 	Password     string `yaml:"password" env:"POSTGRES_PASSWORD"`
-	Database     string `yaml:"database"`
+	Database     string `yaml:"database" env:"POSTGRES_DATABASE"`
 	Sslmode      string `yaml:"sslmode"`
 	MaxOpenConns int    `yaml:"max_open_conns"`
 }

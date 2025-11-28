@@ -158,7 +158,7 @@ func (s *CartUsecase) TestUsecase_DeleteItem(t provider.T) {
 				cart.EXPECT().DeleteCartItem(gomock.Any(), int64(1), int64(1)).Return(0, errors.New("error"))
 			},
 			expectations: func(assert provider.Asserts, got int, err error) {
-				assert.NoError(err)
+				assert.Error(err)
 			},
 		},
 	}

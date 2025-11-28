@@ -1,6 +1,4 @@
-//go:build integration
-
-package repository
+package repository_test
 
 import (
 	"context"
@@ -13,11 +11,11 @@ import (
 	"github.com/b0pof/ppo/tests/controller"
 )
 
-type UserFlow struct {
+type RepoUserFlow struct {
 	suite.Suite
 }
 
-func (g *UserFlow) TestUser(t provider.T) {
+func (g *RepoUserFlow) TestUser(t provider.T) {
 	tests := []struct {
 		name   string
 		userID int64

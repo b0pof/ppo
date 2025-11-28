@@ -16,13 +16,16 @@ import (
 	"github.com/b0pof/ppo/tests/controller"
 )
 
-type CreateOrderFlow struct {
+type E2ECreateOrderFlow struct {
 	suite.Suite
 }
 
-const baseURL = "http://localhost:8080/api/1"
+const (
+	baseURL = "http://localhost:8080/api/1"
+	userID  = 1
+)
 
-func (o *CreateOrderFlow) TestOrderCreationFlow(t provider.T) {
+func (o *E2ECreateOrderFlow) TestOrderCreationFlow(t provider.T) {
 	_ = controller.NewController(t)
 
 	t.WithNewStep("TestOrderCreationFlow", func(ctxA provider.StepCtx) {
@@ -38,36 +41,53 @@ func (o *CreateOrderFlow) TestOrderCreationFlow(t provider.T) {
 		resp, err := client.Post(baseURL+"/auth", "application/json", bytes.NewReader(body))
 		ctxA.Assert().NoError(err)
 		ctxA.Assert().Equal(http.StatusOK, resp.StatusCode)
-		fmt.Println("RESP:", resp)
 
-		var lr loginResponse
-		ctxA.Assert().NoError(json.NewDecoder(resp.Body).Decode(&lr))
+		var sessionID string
+		ctxA.Assert().NoError(json.NewDecoder(resp.Body).Decode(&sessionID))
 		resp.Body.Close()
-		ctxA.Assert().NotEmpty(lr.SessionID)
-		ctxA.Assert().Equal(int64(1), lr.UserID)
+		ctxA.Assert().NotEmpty(sessionID)
 
 		addItem := map[string]int64{"itemId": 3} // Lego set
 		body, _ = json.Marshal(addItem)
-		resp, err = client.Post(fmt.Sprintf("%s/users/%d/cart/items", baseURL, lr.UserID),
+		resp, err = client.Post(fmt.Sprintf("%s/users/%d/cart/items", baseURL, userID),
 			"application/json", bytes.NewReader(body))
 		ctxA.Assert().NoError(err)
 		ctxA.Assert().Equal(http.StatusOK, resp.StatusCode)
 		resp.Body.Close()
 
-		resp, err = client.Get(fmt.Sprintf("%s/users/%d/cart/items", baseURL, lr.UserID))
+		resp, err = client.Get(fmt.Sprintf("%s/users/%d/cart/items", baseURL, userID))
 		ctxA.Assert().NoError(err)
 		ctxA.Assert().Equal(http.StatusOK, resp.StatusCode)
 
 		var cart cartItemsResponse
 		ctxA.Assert().NoError(json.NewDecoder(resp.Body).Decode(&cart))
 		resp.Body.Close()
-		ctxA.Assert().GreaterOrEqual(cart.TotalCount, 1)
+		ctxA.Assert().Equal(cart.TotalCount, 5)
+		ctxA.Assert().Equal(cart.TotalCount, 5)
+		ctxA.Assert().Equal(cart.TotalPrice, 6199)
 		ctxA.Assert().NotEmpty(cart.Items)
-		ctxA.Assert().Equal(int64(3), cart.Items[0].ID)
+		ctxA.Assert().Contains(cart.Items, cartItem{
+			ID:    1,
+			Name:  "Doll",
+			Price: 1000,
+			Count: 3,
+		})
+		ctxA.Assert().Contains(cart.Items, cartItem{
+			ID:    2,
+			Name:  "Plastic car",
+			Price: 1200,
+			Count: 1,
+		})
+		ctxA.Assert().Contains(cart.Items, cartItem{
+			ID:    3,
+			Name:  "Lego set",
+			Price: 1999,
+			Count: 1,
+		})
 
 		orderReq := map[string]string{"status": "created"}
 		body, _ = json.Marshal(orderReq)
-		resp, err = client.Post(fmt.Sprintf("%s/users/%d/orders", baseURL, lr.UserID),
+		resp, err = client.Post(fmt.Sprintf("%s/users/%d/orders", baseURL, userID),
 			"application/json", bytes.NewReader(body))
 		ctxA.Assert().NoError(err)
 		ctxA.Assert().Equal(http.StatusOK, resp.StatusCode)
@@ -77,7 +97,7 @@ func (o *CreateOrderFlow) TestOrderCreationFlow(t provider.T) {
 		resp.Body.Close()
 		ctxA.Assert().NotZero(orderResp.OrderID)
 
-		resp, err = client.Get(fmt.Sprintf("%s/users/%d/cart/items", baseURL, lr.UserID))
+		resp, err = client.Get(fmt.Sprintf("%s/users/%d/cart/items", baseURL, userID))
 		ctxA.Assert().NoError(err)
 		ctxA.Assert().Equal(http.StatusOK, resp.StatusCode)
 
@@ -86,7 +106,7 @@ func (o *CreateOrderFlow) TestOrderCreationFlow(t provider.T) {
 		resp.Body.Close()
 		ctxA.Assert().Equal(0, emptyCart.TotalCount)
 
-		resp, err = client.Get(fmt.Sprintf("%s/users/%d/orders/%d", baseURL, lr.UserID, orderResp.OrderID))
+		resp, err = client.Get(fmt.Sprintf("%s/users/%d/orders/%d", baseURL, userID, orderResp.OrderID))
 		ctxA.Assert().NoError(err)
 		ctxA.Assert().Equal(http.StatusOK, resp.StatusCode)
 

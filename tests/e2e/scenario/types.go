@@ -12,14 +12,16 @@ type createOrderResponse struct {
 }
 
 type cartItemsResponse struct {
-	TotalPrice int `json:"totalPrice"`
-	TotalCount int `json:"totalCount"`
-	Items      []struct {
-		ID    int64  `json:"id"`
-		Name  string `json:"name"`
-		Price int    `json:"price"`
-		Count int    `json:"count"`
-	} `json:"items"`
+	TotalPrice int        `json:"totalPrice"`
+	TotalCount int        `json:"totalCount"`
+	Items      []cartItem `json:"items"`
+}
+
+type cartItem struct {
+	ID    int64  `json:"id"`
+	Name  string `json:"name"`
+	Price int    `json:"price"`
+	Count int    `json:"count"`
 }
 
 type orderResponse struct {

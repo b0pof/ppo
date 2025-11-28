@@ -1,6 +1,4 @@
-//go:build integration
-
-package repository
+package repository_test
 
 import (
 	"context"
@@ -13,11 +11,11 @@ import (
 	"github.com/b0pof/ppo/tests/controller"
 )
 
-type CartFlow struct {
+type RepoCartFlow struct {
 	suite.Suite
 }
 
-func (g *CartFlow) TestAddItemsToCart(t provider.T) {
+func (g *RepoCartFlow) TestAddItemsToCart(t provider.T) {
 	tests := []struct {
 		name       string
 		userID     int64

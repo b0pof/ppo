@@ -1,6 +1,4 @@
-//go:build integration
-
-package repository
+package repository_test
 
 import (
 	"github.com/ozontech/allure-go/pkg/framework/provider"
@@ -10,11 +8,11 @@ import (
 	"github.com/b0pof/ppo/tests/controller"
 )
 
-type SessionCreateDelete struct {
+type RepoSessionCreateDelete struct {
 	suite.Suite
 }
 
-func (g *SessionCreateDelete) TestLoginLogout(t provider.T) {
+func (g *RepoSessionCreateDelete) TestLoginLogout(t provider.T) {
 	tests := []struct {
 		name     string
 		userID   int64

@@ -9,5 +9,5 @@ import (
 )
 
 func TestSuite(t *testing.T) {
-	suite.RunSuite(t, new(CreateOrderFlow))
+	suite.RunSuite(t, new(E2ECreateOrderFlow))
 }
