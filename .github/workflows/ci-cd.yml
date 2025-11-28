@@ -25,8 +25,7 @@ jobs:
 
       - name: Run Unit Tests
         run: |
-          mkdir -p report/unit-allure-results
-          go test -json ./internal/domain/... | golurectl -l -e -o report/unit-allure-results --allure-suite Unit --allure-tags UNIT
+          make unit-test
 
       - name: Upload Unit Allure Results
         uses: actions/upload-artifact@v4
@@ -56,9 +55,6 @@ jobs:
       - name: Run Integration Tests
         run: |
           make integration-test
-#        run: |
-#          mkdir -p report/integration-allure-results
-#          go test -p 1 -json ./tests/integration/... | golurectl -l -e -o report/integration-allure-results --allure-suite Integration --allure-tags INTEGRATION
 
       - name: Upload Integration Allure Results
         uses: actions/upload-artifact@v4
@@ -87,8 +83,7 @@ jobs:
 
       - name: Run E2E Tests
         run: |
-          mkdir -p report/e2e-allure-results
-          go test -json ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E
+          make e2e-test
 
       - name: Upload E2E Allure Results
         uses: actions/upload-artifact@v4
@@ -114,15 +109,7 @@ jobs:
       - name: Merge Allure results
         run: |
           mkdir -p report/allure-results
-          
-          cp -r tmp-allure/allure-results-unit/* report/allure-results/ 2>/dev/null || true
-          cp -r tmp-allure/allure-results-integration/* report/allure-results/ 2>/dev/null || true
-          cp -r tmp-allure/allure-results-e2e/* report/allure-results/ 2>/dev/null || true
-          
-          echo "Total files in allure-results:"
-          find report/allure-results -name "*.json" | wc -l
-          echo "Files from unit tests:"
-          find report/allure-results -name "*.json" | head -5
+          make report-merge
         continue-on-error: true
 
       - name: Checkout gh-pages for history
