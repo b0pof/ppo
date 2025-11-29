@@ -1,0 +1,1 @@
+{"total":2,"items":[{"uid":"141014eda75f7185b119c460f0507725","name":"Integration","statistic":{"failed":1,"broken":0,"skipped":0,"passed":0,"unknown":0,"total":1}},{"uid":"c6f5a5b6950ed6cc083aee826c1dddad","name":"Unit","statistic":{"failed":0,"broken":0,"skipped":0,"passed":21,"unknown":0,"total":21}}]}

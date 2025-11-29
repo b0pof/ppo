@@ -1,0 +1,21 @@
+=== RUN   TestSuite/CartFlow
+=== RUN   TestSuite/CartFlow/Tests
+=== RUN   TestSuite/CartFlow/Tests/TestAddItemsToCart
+db_client.go:111: Cleanup for test TestAddItemsToCart finished in 1.904283ms
+db_client.go:147: Failed to prepare DB for test TestAddItemsToCart, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+db_client.go:147: Failed to prepare DB for test TestAddItemsToCart, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+db_client.go:147: Failed to prepare DB for test TestAddItemsToCart, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+controller.go:37: 
+    	Error Trace:	/home/runner/work/ppo/ppo/tests/controller/controller.go:37
+    	            				/home/runner/work/ppo/ppo/tests/integration/repository/cart_add_and_delete_items_test.go:46
+    	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+    	            				/home/runner/work/ppo/ppo/tests/integration/repository/cart_add_and_delete_items_test.go:45
+    	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+    	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+    	Error:      	Received unexpected error:
+    	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    	Test:       	TestAddItemsToCart
+    	Messages:   	db preparation failed
+--- FAIL: TestSuite/CartFlow (0.61s)
+    --- FAIL: TestSuite/CartFlow/Tests (0.61s)
+        --- FAIL: TestSuite/CartFlow/Tests/TestAddItemsToCart (0.61s)

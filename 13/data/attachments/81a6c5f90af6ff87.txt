@@ -1,0 +1,104 @@
+=== RUN   TestSuite
+=== RUN   TestSuite/ItemFlow
+=== RUN   TestSuite/ItemFlow/Tests
+=== RUN   TestSuite/ItemFlow/Tests/TestGetCartItemsAmount
+=== RUN   TestSuite/ItemFlow/Tests/TestGetCartItemsAmount/test_item_repository
+    db_client.go:111: Cleanup for test test item repository finished in 2.670827ms
+    db_client.go:147: Failed to prepare DB for test test item repository, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test test item repository, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test test item repository, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    controller.go:37: 
+        	Error Trace:	/home/runner/work/ppo/ppo/tests/controller/controller.go:37
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/item_create_delete_get_test.go:37
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/common.go:366
+        	Error:      	Received unexpected error:
+        	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+        	Test:       	test item repository
+        	Messages:   	db preparation failed
+=== RUN   TestSuite/CartFlow
+=== RUN   TestSuite/CartFlow/Tests
+=== RUN   TestSuite/CartFlow/Tests/TestAddItemsToCart
+    db_client.go:111: Cleanup for test TestAddItemsToCart finished in 1.904283ms
+    db_client.go:147: Failed to prepare DB for test TestAddItemsToCart, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test TestAddItemsToCart, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test TestAddItemsToCart, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    controller.go:37: 
+        	Error Trace:	/home/runner/work/ppo/ppo/tests/controller/controller.go:37
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/cart_add_and_delete_items_test.go:46
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/cart_add_and_delete_items_test.go:45
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+        	Error:      	Received unexpected error:
+        	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+        	Test:       	TestAddItemsToCart
+        	Messages:   	db preparation failed
+=== RUN   TestSuite/SessionCreateDelete
+=== RUN   TestSuite/SessionCreateDelete/Tests
+=== RUN   TestSuite/SessionCreateDelete/Tests/TestLoginLogout
+    db_client.go:111: Cleanup for test TestLoginLogout finished in 1.920055ms
+    db_client.go:147: Failed to prepare DB for test TestLoginLogout, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test TestLoginLogout, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test TestLoginLogout, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    controller.go:37: 
+        	Error Trace:	/home/runner/work/ppo/ppo/tests/controller/controller.go:37
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/auth_session_test.go:36
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/steps.go:27
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/auth_session_test.go:35
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/tests.go:163
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/runner/runner.go:224
+        	Error:      	Received unexpected error:
+        	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+        	Test:       	TestLoginLogout
+        	Messages:   	db preparation failed
+=== RUN   TestSuite/OrderFlow
+=== RUN   TestSuite/OrderFlow/Tests
+=== RUN   TestSuite/OrderFlow/Tests/TestOrder
+=== RUN   TestSuite/OrderFlow/Tests/TestOrder/order_test
+    db_client.go:111: Cleanup for test order test finished in 1.834594ms
+    db_client.go:147: Failed to prepare DB for test order test, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test order test, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test order test, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    controller.go:37: 
+        	Error Trace:	/home/runner/work/ppo/ppo/tests/controller/controller.go:37
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/order_create_get_update_test.go:41
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/common.go:366
+        	Error:      	Received unexpected error:
+        	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+        	Test:       	order test
+        	Messages:   	db preparation failed
+=== RUN   TestSuite/UserFlow
+=== RUN   TestSuite/UserFlow/Tests
+=== RUN   TestSuite/UserFlow/Tests/TestUser
+=== RUN   TestSuite/UserFlow/Tests/TestUser/order_test
+    db_client.go:111: Cleanup for test order test finished in 1.813505ms
+    db_client.go:147: Failed to prepare DB for test order test, attempt 1: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test order test, attempt 2: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    db_client.go:147: Failed to prepare DB for test order test, attempt 3: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+    controller.go:37: 
+        	Error Trace:	/home/runner/work/ppo/ppo/tests/controller/controller.go:37
+        	            				/home/runner/work/ppo/ppo/tests/integration/repository/user_create_update_test.go:36
+        	            				/home/runner/go/pkg/mod/github.com/ozontech/allure-go/pkg/framework@v0.7.4/core/common/common.go:366
+        	Error:      	Received unexpected error:
+        	            	failed to prepare db: testfixtures: could not clean table "cart_item": ERROR: relation "cart_item" does not exist (SQLSTATE 42P01)
+        	Test:       	order test
+        	Messages:   	db preparation failed
+--- FAIL: TestSuite (3.08s)
+    --- FAIL: TestSuite/UserFlow (0.61s)
+    --- FAIL: TestSuite/ItemFlow (0.63s)
+    --- FAIL: TestSuite/OrderFlow (0.61s)
+    --- FAIL: TestSuite/CartFlow (0.61s)
+    --- FAIL: TestSuite/SessionCreateDelete (0.61s)
+        --- FAIL: TestSuite/CartFlow/Tests (0.61s)
+        --- FAIL: TestSuite/UserFlow/Tests (0.61s)
+        --- FAIL: TestSuite/ItemFlow/Tests (0.63s)
+        --- FAIL: TestSuite/OrderFlow/Tests (0.61s)
+        --- FAIL: TestSuite/SessionCreateDelete/Tests (0.61s)
+            --- FAIL: TestSuite/SessionCreateDelete/Tests/TestLoginLogout (0.61s)
+            --- FAIL: TestSuite/CartFlow/Tests/TestAddItemsToCart (0.61s)
+            --- FAIL: TestSuite/ItemFlow/Tests/TestGetCartItemsAmount (0.63s)
+            --- FAIL: TestSuite/OrderFlow/Tests/TestOrder (0.61s)
+            --- FAIL: TestSuite/UserFlow/Tests/TestUser (0.61s)
+                --- FAIL: TestSuite/UserFlow/Tests/TestUser/order_test (0.61s)
+                --- FAIL: TestSuite/ItemFlow/Tests/TestGetCartItemsAmount/test_item_repository (0.63s)
+                --- FAIL: TestSuite/OrderFlow/Tests/TestOrder/order_test (0.61s)
