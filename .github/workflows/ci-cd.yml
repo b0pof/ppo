@@ -159,4 +159,4 @@ jobs:
         with:
           name: allure-history
           path: gh-pages/history
-          retention-days: 30
+          retention-days: 120
