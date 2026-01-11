@@ -15,4 +15,3 @@ pstree -p $TEST_PID 2>/dev/null || ps -o pid,ppid,command -p $TEST_PID
 
 wait $TEST_PID
 echo "4. Тесты завершены"
-
