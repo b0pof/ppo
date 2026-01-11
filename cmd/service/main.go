@@ -118,6 +118,11 @@ func main() {
 			Registry: reg,
 		},
 	))
+
+	r.Handle("/health", http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("ok"))
+	}))
 	// !>
 
 	// <! Permissions
@@ -136,7 +141,7 @@ func main() {
 		ExposedHeaders:   []string{"Content-Length"},
 		AllowCredentials: true,
 	})
-	r.Use(authMiddleware.New(authUsecase, userUsecase))
+	r.Use(authMiddleware.New(authUsecase, userUsecase, cfg.Server.Mode))
 	r.Use(observabilityMiddleware.New(metrics.NewMetrics(reg), log))
 	//r.Use(permsMiddleware.New())
 	// !>
@@ -164,12 +169,12 @@ func main() {
 	// !>
 
 	// <! Server
-	srv := server.NewServer(corsMiddleware.Handler(srvRouter))
+	srv := server.NewServer(corsMiddleware.Handler(srvRouter), cfg.Server)
 	// !>
 
 	// <! Run
 	go func() {
-		log.Info("server is running...")
+		log.Info(fmt.Sprintf("server is running on port %s...", cfg.Server.Port))
 		if err := srv.Run(); err != nil {
 			log.Error(">>> ERROR: HTTP server ListenAndServe error: " + err.Error())
 		}

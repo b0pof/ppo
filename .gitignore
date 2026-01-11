@@ -8,6 +8,9 @@ report/*
 
 log.json
 
+log/
+logs/
+
 testresult.txt
 
 # Binaries for programs and plugins

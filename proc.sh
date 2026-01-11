@@ -1,9 +1,7 @@
 #!/bin/bash
-# test_process_analysis.sh
 
 echo "=== Анализ процессов Go тестов ==="
 
-# Запускаем тесты и отслеживаем процессы
 echo "1. Запуск всех тестов:"
 ps aux | grep "go test" | grep -v grep || echo "Нет процессов go test"
 

@@ -1,22 +1,65 @@
 version: '3.8'
 
+x-postgres-common:
+  &postgres-common
+  image: postgres:16
+  healthcheck:
+    test: [ "CMD-SHELL", "pg_isready -U replicator -d master" ]
+  networks:
+    - pg_net
+
 services:
   postgres:
-    image: postgres:16
+    <<: *postgres-common
     container_name: postgres-ppo
-    volumes:
-      - 'postgres-ppo-data:/var/lib/postgresql/data'
-    ports:
-      - '5432:5432'
     user: postgres
     environment:
-      - POSTGRES_DB=master
-      - POSTGRES_PASSWORD=postgres
-    healthcheck:
-      test: pg_isready
-      interval: 10s
-      timeout: 10s
-      retries: 3
+      POSTGRES_DB: master
+      PGDATABASE: master
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    command: |
+      postgres 
+      -c wal_level=replica 
+      -c hot_standby=on 
+      -c max_wal_senders=10 
+      -c max_replication_slots=10 
+      -c hot_standby_feedback=on
+    ports:
+      - '5432:5432'
+    volumes:
+      - './db/init/00_init.sql:/docker-entrypoint-initdb.d/00_init.sql'
+      - './db/replication/allow.sh:/docker-entrypoint-initdb.d/allow.sh'
+      - 'postgres-ppo-data:/var/lib/postgresql/data'
+
+  postgres-replica:
+    <<: *postgres-common
+    container_name: postgres-replica-ppo
+    user: postgres
+#    volumes:
+#      - 'postgres-replica-ppo-data:/var/lib/postgresql/data'
+    ports:
+      - '5434:5432'
+    environment:
+      PGUSER: replicator
+      PGPASSWORD: replicator_password
+      POSTGRES_DB: master
+      PGDATABASE: master
+      POSTGRES_PASSWORD: postgres
+    command: |
+        bash -c "
+        until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=postgres --port=5432
+        do
+        echo 'Waiting for primary to connect...'
+        sleep 1s
+        done
+        echo 'Backup done, starting replica...'
+        chmod 0700 /var/lib/postgresql/data
+        postgres
+        "
+    depends_on:
+      - postgres
 
   redis:
     image: 'redis'
@@ -32,62 +75,93 @@ services:
     volumes:
       - 'redis-ppo-data:/data'
 
-  # Monitoring
-#  prometheus:
-#    image: prom/prometheus
-#    container_name: prometheus
-#    user: root
-#    env_file:
-#      - '.env'
-#    ports:
-#      - '9090:9090'
-#    volumes:
-#      - ./prometheus/:/etc/prometheus/
-#      - prometheus-data:/prometheus
-#    command:
-#      - --config.file=/etc/prometheus/prometheus.yaml
-#    hostname: prometheus
-#    environment:
-#      TZ: "Europe/Moscow"
+  nginx:
+    image: nginx:alpine
+    restart: unless-stopped
+    user: root
+    ports:
+      - "80:80"
+    volumes:
+      - ./img:/usr/share/nginx/html/img
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./static:/usr/share/nginx/html/static
+      - ./README.md:/usr/share/nginx/html/README.md
+      - ./httpcli:/usr/share/nginx/html/httpcli
+#      - ./nginx/certs:/etc/nginx/certs
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
-#  grafana:
-#    image: grafana/grafana
-#    container_name: grafana
-#    user: root
-#    env_file:
-#      - '.env'
-#    depends_on:
-#      - prometheus
-#    ports:
-#      - '3100:3000'
-#    volumes:
-#      - grafana-data:/var/lib/grafana
-#    hostname: grafana
-#    environment:
-#      - TERM=linux
-#      - GF_LOG_LEVEL=debug
-#      - GF_DATAPROXY_LOGGING=true
-#      - GF_DEFAULT_APP_MODE=development
-#      - TZ="Europe/Moscow"
-#
-#  node-exporter:
-#    image: prom/node-exporter
-#    container_name: exporter
-#    volumes:
-#      - /proc:/host/proc:ro
-#      - /sys:/host/sys:ro
-#      - /:/rootfs:ro
-#    hostname: exporter
-#    command:
-#      - --path.procfs=/host/proc
-#      - --path.sysfs=/host/sys
-#      - --collector.filesystem.ignored-mount-points
-#      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
-#    ports:
-#      - '9100:9100'
-#    restart: unless-stopped
-#    environment:
-#      TZ: "Europe/Moscow"
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    user: root
+    env_file:
+      - '.env'
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus-data:/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yaml
+    hostname: prometheus
+    environment:
+      TZ: "Europe/Moscow"
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    user: root
+    env_file:
+      - '.env'
+    depends_on:
+      - prometheus
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+    hostname: grafana
+    environment:
+      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/monitoring/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - TERM=linux
+      - GF_LOG_LEVEL=debug
+      - GF_DATAPROXY_LOGGING=true
+      - GF_DEFAULT_APP_MODE=development
+      - TZ="Europe/Moscow"
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    hostname: exporter
+    command:
+      - --path.procfs=/host/proc
+      - --path.sysfs=/host/sys
+      - --collector.filesystem.ignored-mount-points
+      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+    ports:
+      - '9100:9100'
+    restart: unless-stopped
+    environment:
+      TZ: "Europe/Moscow"
+
+  loki:
+    image: grafana/loki:2.9.4
+    ports:
+      - "3101:3100"
+
+  promtail:
+    image: grafana/promtail:2.9.4
+    volumes:
+      - ./logs:/logs
+      - ./loki/promtail.yaml:/etc/promtail/config.yaml
+    command: -config.file=/etc/promtail/config.yaml
+    depends_on:
+      - loki
 
 #  pgadmin:
 #    image: dpage/pgadmin4
@@ -116,22 +190,17 @@ services:
 #    extra_hosts:
 #      - "host.docker.internal:host-gateway"
 
-  nginx:
-    image: nginx:alpine
-    user: root
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./static:/usr/share/nginx/html/static
-      - ./README.md:/usr/share/nginx/html/Readme.md
-      - ./httpcli:/usr/share/nginx/html/httpcli
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
 volumes:
   postgres-ppo-data:
+  postgres-replica-ppo-data:
   redis-ppo-data:
   grafana-data:
   prometheus-data:
   pgadmin-data:
+
+networks:
+  pg_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.30.0.0/16

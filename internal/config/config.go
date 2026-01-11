@@ -11,13 +11,22 @@ import (
 )
 
 const (
-	defaultConfigPathLocal = "config/local.yml"
+	ServerModeReadOnly  = "ro"
+	ServerModeReadWrite = "rw"
+
+	defaultConfigPathLocal = "config/app.yml"
 )
 
 type Config struct {
 	Service  ServiceConfig  `yaml:"service"`
+	Server   ServerConfig   `yaml:"server"`
 	Postgres PostgresConfig `yaml:"postgres"`
 	Redis    RedisConfig    `yaml:"redis"`
+}
+
+type ServerConfig struct {
+	Port string `yaml:"port" env:"SERVER_PORT"`
+	Mode string `yaml:"mode" env:"SERVER_MODE"`
 }
 
 type ServiceConfig struct {

@@ -47,7 +47,6 @@
             margin-top: 5px;
         }
 
-        /* --- Code block for installing CLI --- */
         .code-container {
             position: relative;
             margin-top: 25px;
@@ -86,22 +85,22 @@
     <div class="nav-grid">
         <a href="/" class="nav-item">
             Главная страница
-            <div class="description">Статика / SPA</div>
+            <div class="description">Макеты</div>
         </a>
 
         <a href="/api/v1" class="nav-item">
             Документация API
-            <div class="description">Swagger Docs</div>
+            <div class="description">Swagger</div>
         </a>
 
-        <a href="/documentation" class="nav-item">
+        <a href="/documentation/" class="nav-item">
             Readme.md
-            <div class="description">Документация в сыром виде</div>
+            <div class="description">Документация</div>
         </a>
 
         <a href="/reserved/" class="nav-item">
             Reserved area
-            <div class="description">То же что и главная</div>
+            <div class="description">Главная страница</div>
         </a>
 
         <a href="/admin/" class="nav-item">
@@ -111,17 +110,20 @@
 
         <a href="/status" class="nav-item">
             Статус сервера
-            <div class="description">Nginx metrics</div>
+            <div class="description">Nginx status</div>
         </a>
 
-        <!-- Новая кнопка "Скачать CLI" -->
+        <a href="/monitoring" class="nav-item">
+            Логи и метрики
+            <div class="description">Logs & Metrics</div>
+        </a>
+
         <a href="/download/cli" class="nav-item">
             Скачать CLI
             <div class="description">Скачать CLI</div>
         </a>
     </div>
 
-    <!-- Code block with copy button -->
     <div class="code-container">
         <button class="copy-btn" onclick="copyCode()">Копировать</button>
         <div class="code-box" id="code">

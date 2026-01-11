@@ -1,0 +1,24 @@
+db:
+  replicas:
+    - mode: master
+      port: 5432
+    - mode: slave
+      port: 5434
+service:
+  replicas:
+    - group: main
+      pods:
+      - port: 8080
+        mode: rw
+      - port: 8081
+        mode: ro
+      - port: 8082
+        mode: ro
+    - group: mirror
+      pods:
+      - port: 8083
+        mode: rw
+      - port: 8084
+        mode: ro
+      - port: 8085
+        mode: ro

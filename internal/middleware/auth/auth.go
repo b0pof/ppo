@@ -4,6 +4,8 @@ import (
 	"errors"
 	"net/http"
 
+	"github.com/b0pof/ppo/internal/config"
+	"github.com/b0pof/ppo/internal/util/pointer"
 	"github.com/gorilla/mux"
 
 	"github.com/b0pof/ppo/internal/model"
@@ -12,9 +14,14 @@ import (
 	"github.com/b0pof/ppo/internal/util/http/response"
 )
 
-func New(auth auth, user user) mux.MiddlewareFunc {
+func New(auth auth, user user, mode string) mux.MiddlewareFunc {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != http.MethodGet && mode == config.ServerModeReadOnly {
+				response.Forbidden(w, pointer.To("this replica supports GET method only"))
+				return
+			}
+
 			ctx := r.Context()
 
 			role := model.RoleGuest

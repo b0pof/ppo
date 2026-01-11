@@ -2,21 +2,20 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"net/http"
-)
 
-const (
-	port = ":8080"
+	"github.com/b0pof/ppo/internal/config"
 )
 
 type Server struct {
 	httpServer *http.Server
 }
 
-func NewServer(r http.Handler) *Server {
+func NewServer(r http.Handler, cfg config.ServerConfig) *Server {
 	return &Server{
 		httpServer: &http.Server{
-			Addr:    port,
+			Addr:    fmt.Sprintf(":%s", cfg.Port),
 			Handler: r,
 		},
 	}

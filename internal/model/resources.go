@@ -54,6 +54,13 @@ var Resources = map[Path]Permissions{
 		{
 			role: RoleGuest,
 		},
+		// temp
+		{
+			role: RoleBuyer,
+		},
+		{
+			role: RoleSeller,
+		},
 	},
 	LogoutPath: {
 		{

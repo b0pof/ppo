@@ -1,5 +1,8 @@
 service:
   session_ttl: 12h
+server:
+  port: "8080"
+  mode: "rw"
 postgres:
   host: "localhost"
   port: "5432"

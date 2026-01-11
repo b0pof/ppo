@@ -1,0 +1,17 @@
+body {
+    font-family: monospace;
+    background: #0f172a;
+    color: #8c9f65;
+    padding: 40px;
+}
+
+h1 {
+    color: #2076aa;
+}
+
+.card {
+    background: #020617;
+    padding: 20px;
+    border-radius: 12px;
+    width: 420px;
+}

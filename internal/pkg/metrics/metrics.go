@@ -7,7 +7,8 @@ import (
 )
 
 type Collector interface {
-	IncreaseHits(path string)
+	Increase(service string, path string, method string)
+	Count(key string, count float64)
 	IncreaseErr(statusCode string, path string)
 	AddDurationToHistogram(path string, duration time.Duration)
 	AddDurationToSummary(statusCode string, path string, duration time.Duration)
@@ -21,7 +22,7 @@ type Metrics struct {
 }
 
 func NewMetrics(reg prometheus.Registerer) *Metrics {
-	labelHits := []string{"path"}
+	labelHits := []string{"service", "path", "method"}
 	totalHits := prometheus.NewCounterVec(prometheus.CounterOpts{
 		Name: "hits_total",
 	}, labelHits)
@@ -60,8 +61,12 @@ func NewMetrics(reg prometheus.Registerer) *Metrics {
 	}
 }
 
-func (m *Metrics) IncreaseHits(path string) {
-	m.totalHits.WithLabelValues(path).Inc()
+func (m *Metrics) Increase(service string, path string, method string) {
+	m.totalHits.WithLabelValues(service, path, method).Inc()
+}
+
+func (m *Metrics) Count(key string, count float64) {
+	m.totalHits.WithLabelValues("", key, "").Add(count)
 }
 
 func (m *Metrics) IncreaseErr(statusCode string, path string) {

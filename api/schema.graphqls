@@ -1,0 +1,150 @@
+scalar DateTime
+
+enum Role {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+enum OrderStatus {
+  CREATED
+  PROCESSING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELED
+}
+
+type Query {
+  me: User
+
+  user(id: ID!): User
+  users: [User!]!
+
+  items(page: Int = 1, limit: Int = 20): [Item!]!
+  item(id: ID!): Item
+
+  categories: [Category!]!
+  category(id: ID!): Category
+
+  sellerItems(sellerId: ID!): [Item!]!
+}
+
+type Mutation {
+  signup(login: String!, password: String!, role: Role!): AuthPayload!
+  login(login: String!, password: String!): AuthPayload!
+  logout: Boolean!
+
+  updateUser(name: String!, login: String!, phone: String!): User!
+  updatePassword(oldPassword: String!, newPassword: String!): Boolean!
+
+  createItem(
+    name: String!
+    description: String!
+    price: Int!
+    imgSrc: String!
+  ): Item!
+
+  updateItem(
+    id: ID!
+    name: String!
+    description: String!
+    price: Int!
+    imgSrc: String!
+  ): Item!
+
+  deleteItem(id: ID!): Boolean!
+
+  addItemToCart(itemId: ID!): Cart!
+  removeItemFromCart(itemId: ID!): Cart!
+  clearCart: Boolean!
+
+  createOrder: Order!
+  updateOrderStatus(orderId: ID!, status: OrderStatus!): Order!
+
+  createReview(
+    itemId: ID!
+    rating: Int!
+    advantages: String
+    disadvantages: String
+    comment: String
+  ): Review!
+}
+
+type AuthPayload {
+  token: String!
+}
+
+type User {
+  id: ID!
+  name: String
+  login: String!
+  phone: String
+  role: Role!
+
+  meta: UserMeta!
+  cart: Cart!
+  orders: [Order!]!
+}
+
+type UserMeta {
+  name: String!
+  cartItemsAmount: Int!
+}
+
+type Item {
+  id: ID!
+  name: String!
+  description: String!
+  price: Int!
+  rating: Float
+  imgSrc: String!
+  amount: Int!
+  seller: User!
+  category: Category
+  reviews: [Review!]!
+}
+
+type Category {
+  id: ID!
+  name: String!
+  parent: Category
+  children: [Category!]!
+  items(page: Int = 1, limit: Int = 20): [Item!]!
+}
+
+type Review {
+  id: ID!
+  rating: Int!
+  advantages: String
+  disadvantages: String
+  comment: String
+  user: User!
+  createdAt: DateTime!
+}
+
+type Cart {
+  totalPrice: Int!
+  totalCount: Int!
+  items: [CartItem!]!
+}
+
+type CartItem {
+  item: Item!
+  count: Int!
+}
+
+type Order {
+  id: ID!
+  buyer: User!
+  status: OrderStatus!
+  createdAt: DateTime!
+  sum: Int!
+  items: [OrderItem!]!
+}
+
+type OrderItem {
+  item: Item!
+  count: Int!
+  price: Int!
+}

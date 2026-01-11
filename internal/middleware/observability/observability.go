@@ -9,11 +9,11 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
-	"strconv"
 	"strings"
 	"sync/atomic"
 	"time"
 
+	"github.com/b0pof/ppo/internal/util/discovery/service"
 	"github.com/gorilla/mux"
 
 	"github.com/b0pof/ppo/internal/pkg/metrics"
@@ -83,28 +83,20 @@ func New(metrics metrics.Collector, l *slog.Logger) mux.MiddlewareFunc {
 			next.ServeHTTP(wi, r)
 			dur := time.Since(start)
 
-			statusCode, err := wi.GetStatusCode()
-			if err != nil {
-				requestLogger.Error("error while getting status code",
-					slog.String("duration", dur.String()))
-				return
-			}
-			requestLogger.Info("response",
-				slog.Int("statusCode", statusCode),
-				slog.String("duration", dur.String()))
-
-			if statusCode >= 300 {
-				metrics.IncreaseErr(strconv.Itoa(statusCode), r.RequestURI)
-			}
 			path := r.URL.Path
 			pathVars := mux.Vars(r)
 			for key, value := range pathVars {
 				path, _ = strings.CutSuffix(path, value)
 				path += fmt.Sprintf("{%s}", key)
 			}
-			metrics.AddDurationToHistogram(path, dur)
-			metrics.AddDurationToSummary(strconv.Itoa(statusCode), path, dur)
-			metrics.IncreaseHits(path)
+			metrics.AddDurationToHistogram(clearPath(path), dur)
+			// metrics.AddDurationToSummary(strconv.Itoa(statusCode), clearPath(path), dur)
+			metrics.Increase(service.Name, clearPath(path), r.Method)
 		})
 	}
+}
+
+func clearPath(raw string) string {
+	raw = strings.TrimLeft(raw, "/")
+	return strings.ReplaceAll(raw, "/", "_")
 }
