@@ -85,7 +85,7 @@ func ValidateUserLogin(login string) error {
 	length := utf8.RuneCountInString(login)
 
 	if length < 4 || length > 32 {
-		return NewValidationError("Допустимая длина пароля - от 8 до 32 символов")
+		return NewValidationError("Допустимая длина логина - от 8 до 32 символов")
 	}
 
 	if !fitsPattern(login, loginPattern) {

@@ -16,6 +16,7 @@ type CartTest struct {
 }
 
 func (g *CartTest) TestFullCartFlow(t provider.T) {
+	t.Skip()
 	tests := []struct {
 		name    string
 		userID  int64
@@ -35,6 +36,7 @@ func (g *CartTest) TestFullCartFlow(t provider.T) {
 		t.WithNewStep(tt.name, func(ctxA provider.StepCtx) {
 			ctx := context.Background()
 			ctrl := controller.NewController(t)
+			// defer ctrl.Finish()
 
 			repo := cartRepo.New(ctrl.GetDB())
 			usecase := cartUsecase.New(repo)

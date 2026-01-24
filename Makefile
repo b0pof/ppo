@@ -96,13 +96,20 @@ test-trace: ## Запустить тесты с трейсингом по тре
 
 .PHONY: integration-test
 integration-test: ## Запустить интеграционные тесты
-	@make deps
+	@#make deps
 	@docker compose -f tests/docker-compose.yml up -d
 	@echo 'Starting environment...'
 	@sleep 3s
 	@echo 'Applying migrations...'
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
+	@go run tests/db/prepare.go
 	@go test -p 1 -json -tags=integration ./tests/integration/... | golurectl -l -e -o report/integration-allure-results --allure-suite Integration --allure-tags INTEGRATION
+
+.PHONY: integration-fast
+integration-fast: ## Запустить интеграционные тесты
+	@#make deps
+	@#go run tests/db/prepare.go
+	@go test -p 1 -tags=integration ./tests/integration/...
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты

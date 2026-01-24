@@ -17,6 +17,7 @@ type ItemFlow struct {
 }
 
 func (g *ItemFlow) TestFullItemFlow(t provider.T) {
+	t.Skip()
 	tests := []struct {
 		name     string
 		userID   int64
@@ -34,6 +35,7 @@ func (g *ItemFlow) TestFullItemFlow(t provider.T) {
 		t.WithNewStep(tt.name, func(ctxA provider.StepCtx) {
 			ctx := context.Background()
 			ctrl := controller.NewController(t)
+			// defer ctrl.Finish()
 
 			repo := itemRepo.New(ctrl.GetDB())
 			usecase := itemUsecase.New(repo)

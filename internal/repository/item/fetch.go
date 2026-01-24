@@ -14,7 +14,7 @@ func (r *Repository) GetByID(ctx context.Context, itemID int64, userID int64) (m
 		select i.id, i.name, i.seller_id, i.rating, s.name as seller_name, i.price, i.description, i.imgsrc,
 		       coalesce(ci.count, 0) AS amount
 		from item i
-			join "user" s on i.seller_id = s.id
+			left join "user" s on i.seller_id = s.id
 			left join cart_item ci on i.id = ci.item_id and ci.user_id = $1
 		where i.id = $2;
 	`
@@ -38,7 +38,7 @@ func (r *Repository) GetAllItems(ctx context.Context, userID int64) ([]model.Ite
 			   coalesce(ci.count, 0) AS amount
 
 		from item i
-			join "user" s on i.seller_id = s.id
+			left join "user" s on i.seller_id = s.id
 			left join cart_item ci on i.id = ci.item_id and ci.user_id = $1;
 	`
 

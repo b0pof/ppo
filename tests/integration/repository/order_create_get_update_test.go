@@ -2,14 +2,19 @@ package repository_test
 
 import (
 	"context"
-	"time"
+	"fmt"
+
+	cartRepo "github.com/b0pof/ppo/internal/repository/cart"
+	itemRepo "github.com/b0pof/ppo/internal/repository/item"
+	cartUc "github.com/b0pof/ppo/internal/usecase/cart"
+	itemUc "github.com/b0pof/ppo/internal/usecase/item"
+	"github.com/ozontech/allure-go/pkg/framework/provider"
+	"github.com/ozontech/allure-go/pkg/framework/suite"
 
 	"github.com/b0pof/ppo/internal/model"
 	orderRepo "github.com/b0pof/ppo/internal/repository/order"
 	"github.com/b0pof/ppo/tests/controller"
-
-	"github.com/ozontech/allure-go/pkg/framework/provider"
-	"github.com/ozontech/allure-go/pkg/framework/suite"
+	"github.com/b0pof/ppo/tests/integration/common/creator/user"
 )
 
 const (
@@ -21,82 +26,82 @@ type RepoOrderFlow struct {
 }
 
 func (g *RepoOrderFlow) TestOrder(t provider.T) {
-	tests := []struct {
-		name    string
-		userID  int64
-		orderID int64
-	}{
-		{
-			name:    "order test",
-			userID:  1,
-			orderID: 1,
-		},
-	}
+	t.Run("order test", func(t provider.T) {
+		ctrl := controller.NewController(t)
+		orderRepository := orderRepo.New(ctrl.GetDB())
 
-	for _, test := range tests {
-		tt := test
-		t.Run(tt.name, func(t provider.T) {
-			ctrl := controller.NewController(t)
+		ctx := context.Background()
+		testUser := user.New(ctrl).Random()
 
-			orderRepository := orderRepo.New(ctrl.GetDB())
+		cartUsecase := cartUc.New(cartRepo.New(ctrl.GetDB()))
+		itemUsecase := itemUc.New(itemRepo.New(ctrl.GetDB()))
 
-			ctx := context.Background()
+		var cartItems []model.CartItem
 
-			// get order
-			order, err := orderRepository.GetByID(ctx, tt.orderID)
+		for i := 0; i < 5; i++ {
+			itemID, err := itemUsecase.Create(ctx, model.Item{
+				Name:  fmt.Sprintf("item%d", i+1),
+				Price: 1_000 * (i + 1),
+			})
 			t.Assert().NoError(err)
 
-			expectedTime, _ := time.Parse(timeParseLayout, "2025-03-23 10:04:24.284191 +00:00")
-			location, _ := time.LoadLocation("Europe/Moscow")
-			expectedTimeMsk := expectedTime.In(location).Local()
+			newCount, err := cartUsecase.AddItem(ctx, testUser.ID, itemID)
+			t.Assert().NoError(err)
 
-			t.Assert().Equal(model.Order{
-				ID:         tt.orderID,
-				Sum:        5000,
-				BuyerID:    1,
+			item, err := itemUsecase.GetByID(ctx, testUser.ID, itemID)
+			t.Assert().NoError(err, fmt.Sprintf("item with id=%d not found", itemID))
+
+			cartItems = append(cartItems, model.CartItem{
+				ID:     item.ID,
+				Name:   item.Name,
+				Price:  item.Price,
+				Count:  newCount,
+				ImgSrc: item.ImgSrc,
+			})
+		}
+
+		orderID, err := orderRepository.Create(ctx, testUser.ID, cartItems)
+		t.Assert().NoError(err)
+
+		order, err := orderRepository.GetByID(ctx, orderID)
+		t.Assert().NoError(err)
+
+		t.Assert().Equal(model.Order{
+			ID:         orderID,
+			Sum:        15_000,
+			BuyerID:    testUser.ID,
+			ItemsCount: 5,
+			Status:     model.OrderStatusCreated,
+			CreatedAt:  order.CreatedAt,
+		}, order)
+
+		orders, err := orderRepository.GetOrdersByUserID(ctx, testUser.ID)
+		t.Assert().NoError(err)
+
+		t.Assert().Equal([]model.Order{
+			{
+				ID:         orderID,
+				Sum:        15_000,
+				BuyerID:    testUser.ID,
 				ItemsCount: 5,
 				Status:     model.OrderStatusCreated,
-				CreatedAt:  expectedTimeMsk,
-			}, order)
+				CreatedAt:  order.CreatedAt,
+			},
+		}, orders)
 
-			// get orders by user
-			orders, err := orderRepository.GetOrdersByUserID(ctx, tt.userID)
-			t.Assert().NoError(err)
-			t.Assert().Equal([]model.Order{
-				{
-					ID:         1,
-					Sum:        5000,
-					BuyerID:    tt.userID,
-					ItemsCount: 5,
-					Status:     model.OrderStatusCreated,
-					CreatedAt:  expectedTimeMsk,
-				},
-				{
-					ID:         2,
-					Sum:        6697,
-					BuyerID:    tt.userID,
-					ItemsCount: 4,
-					Status:     model.OrderStatusReady,
-					CreatedAt:  expectedTimeMsk,
-				},
-			}, orders)
+		err = orderRepository.UpdateStatus(ctx, orderID, model.OrderStatusDone)
+		t.Assert().NoError(err)
 
-			// update status
-			err = orderRepository.UpdateStatus(ctx, tt.orderID, model.OrderStatusDone)
-			t.Assert().NoError(err)
+		order, err = orderRepository.GetByID(ctx, orderID)
+		t.Assert().NoError(err)
 
-			// check new status
-			order, err = orderRepository.GetByID(ctx, tt.orderID)
-			t.Assert().NoError(err)
-			t.Assert().Equal(model.Order{
-				ID:         tt.orderID,
-				Sum:        5000,
-				BuyerID:    1,
-				ItemsCount: 5,
-				Status:     model.OrderStatusDone,
-				CreatedAt:  expectedTimeMsk,
-			}, order)
-		})
-
-	}
+		t.Assert().Equal(model.Order{
+			ID:         orderID,
+			Sum:        15_000,
+			BuyerID:    testUser.ID,
+			ItemsCount: 5,
+			Status:     model.OrderStatusDone,
+			CreatedAt:  order.CreatedAt,
+		}, order)
+	})
 }

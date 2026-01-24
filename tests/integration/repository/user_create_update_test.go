@@ -3,12 +3,14 @@ package repository_test
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
 	"github.com/b0pof/ppo/internal/model"
 	userRepo "github.com/b0pof/ppo/internal/repository/user"
 	"github.com/b0pof/ppo/tests/controller"
+	"github.com/b0pof/ppo/tests/integration/common/creator/user"
 )
 
 type RepoUserFlow struct {
@@ -16,88 +18,59 @@ type RepoUserFlow struct {
 }
 
 func (g *RepoUserFlow) TestUser(t provider.T) {
-	tests := []struct {
-		name   string
-		userID int64
-		login  string
-	}{
-		{
-			name:   "order test",
-			userID: 1,
-			login:  "user1",
-		},
-	}
+	t.Run("user flow", func(t provider.T) {
+		ctrl := controller.NewController(t)
+		// defer ctrl.Finish()
 
-	for _, test := range tests {
-		tt := test
-		t.Run(tt.name, func(t provider.T) {
-			ctrl := controller.NewController(t)
+		userRepository := userRepo.New(ctrl.GetDB())
 
-			userRepository := userRepo.New(ctrl.GetDB())
+		ctx := context.Background()
 
-			ctx := context.Background()
+		testUser := user.New(ctrl).Random()
 
-			// get user by id
-			user, err := userRepository.GetByID(ctx, tt.userID)
-			t.Assert().NoError(err)
-			t.Assert().Equal(model.User{
-				ID:       tt.userID,
-				Name:     "User1 Name",
-				Login:    tt.login,
-				Role:     model.RoleBuyer,
-				Phone:    "88005553535",
-				Password: "$2a$10$fMfBQXaBUDqfl5VU2xOmpeUtX.l.Vx1ZfkaDADAcnzr7hHYZqPru.",
-			}, user)
+		// get user by id
+		user, err := userRepository.GetByID(ctx, testUser.ID)
+		t.Assert().NoError(err)
+		t.Assert().Equal(model.User{
+			ID:       testUser.ID,
+			Name:     testUser.Name,
+			Login:    testUser.Login,
+			Role:     testUser.Role,
+			Phone:    testUser.Phone,
+			Password: testUser.Password,
+		}, user)
 
-			// get user by login
-			user, err = userRepository.GetByLogin(ctx, tt.login)
-			t.Assert().NoError(err)
-			t.Assert().Equal(model.User{
-				ID:       tt.userID,
-				Name:     "User1 Name",
-				Login:    tt.login,
-				Role:     model.RoleBuyer,
-				Phone:    "88005553535",
-				Password: "$2a$10$fMfBQXaBUDqfl5VU2xOmpeUtX.l.Vx1ZfkaDADAcnzr7hHYZqPru.",
-			}, user)
+		// get user by login
+		user, err = userRepository.GetByLogin(ctx, testUser.Login)
+		t.Assert().NoError(err)
+		t.Assert().Equal(model.User{
+			ID:       testUser.ID,
+			Name:     testUser.Name,
+			Login:    testUser.Login,
+			Role:     testUser.Role,
+			Phone:    testUser.Phone,
+			Password: testUser.Password,
+		}, user)
 
-			// get role
-			role, err := userRepository.GetRoleByID(ctx, tt.userID)
-			t.Assert().NoError(err)
-			t.Assert().Equal(model.RoleBuyer, role)
+		// get role
+		role, err := userRepository.GetRoleByID(ctx, testUser.ID)
+		t.Assert().NoError(err)
+		t.Assert().Equal(model.RoleBuyer, role)
 
-			// create user
-			newUserID, err := userRepository.Create(ctx, "newUser", "password123", model.RoleBuyer)
-			t.Assert().NoError(err)
+		newLogin := uuid.New().String()
 
-			expectedUser := model.User{
-				ID:       newUserID,
-				Name:     "newUser",
-				Login:    "newUser",
-				Role:     model.RoleBuyer,
-				Password: "password123",
-			}
-
-			// get created user
-			user, err = userRepository.GetByID(ctx, newUserID)
-			t.Assert().NoError(err)
-			t.Assert().Equal(expectedUser, user)
-
-			// update user
-			err = userRepository.UpdateByID(ctx, newUserID, model.User{
-				Login: "updatedLogin",
-				Name:  "updatedName",
-			})
-			t.Assert().NoError(err)
-
-			// check updated user
-			user, err = userRepository.GetByID(ctx, newUserID)
-			t.Assert().NoError(err)
-
-			expectedUser.Login = "updatedLogin"
-			expectedUser.Name = "updatedName"
-			t.Assert().Equal(expectedUser, user)
+		// update user
+		err = userRepository.UpdateByID(ctx, testUser.ID, model.User{
+			Login: newLogin,
+			Name:  newLogin,
 		})
+		t.Assert().NoError(err)
 
-	}
+		// check updated user
+		user, err = userRepository.GetByID(ctx, testUser.ID)
+		t.Assert().NoError(err)
+
+		t.Assert().Equal(user.Login, newLogin)
+		t.Assert().Equal(user.Name, newLogin)
+	})
 }

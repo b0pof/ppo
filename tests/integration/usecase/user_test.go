@@ -3,12 +3,16 @@ package usecase_test
 import (
 	"context"
 
+	"github.com/Pallinder/go-randomdata"
+	"github.com/b0pof/ppo/tests/integration/common/generator/field/text"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
 	"github.com/b0pof/ppo/internal/model"
+	authRepo "github.com/b0pof/ppo/internal/repository/auth"
 	userRepo "github.com/b0pof/ppo/internal/repository/user"
-	userUsecase "github.com/b0pof/ppo/internal/usecase/user"
+	authUc "github.com/b0pof/ppo/internal/usecase/auth"
+	userUc "github.com/b0pof/ppo/internal/usecase/user"
 	"github.com/b0pof/ppo/tests/controller"
 )
 
@@ -17,69 +21,67 @@ type UserTest struct {
 }
 
 func (g *UserTest) TestFullUserFlow(t provider.T) {
-	tests := []struct {
-		name    string
-		userID  int64
-		oldPass string
-		newPass string
-	}{
-		{
-			name:    "full user usecase flow",
-			userID:  1,
-			oldPass: "testtest",
-			newPass: "newStrongPass1",
-		},
-	}
+	var (
+		testPassword    = "pwdpwdpwd777"
+		newTestPassword = "newpwdpwd777"
+	)
 
-	for _, test := range tests {
-		tt := test
-		t.WithNewStep(tt.name, func(ctxA provider.StepCtx) {
-			ctx := context.Background()
-			ctrl := controller.NewController(t)
+	t.WithNewStep("user flow", func(ctxA provider.StepCtx) {
+		ctx := context.Background()
+		ctrl := controller.NewController(t)
+		// defer ctrl.Finish()
 
-			repo := userRepo.New(ctrl.GetDB())
-			usecase := userUsecase.New(repo)
+		userRepository := userRepo.New(ctrl.GetDB())
+		authRepository := authRepo.New(ctrl.GetRedis())
 
-			user, err := usecase.GetByID(ctx, tt.userID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().Equal(tt.userID, user.ID)
-			ctxA.Assert().NotEmpty(user.Role)
-			ctxA.Assert().NotEmpty(user.Name)
-			ctxA.Assert().NotEmpty(user.Login)
-			ctxA.Assert().NotEmpty(user.Phone)
-			ctxA.Assert().NotEmpty(user.Password)
+		userUsecase := userUc.New(userRepository)
+		authUsecase := authUc.New(authRepository, userRepository)
 
-			role, err := usecase.GetRoleByID(ctx, tt.userID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().True(role == "buyer" || role == "seller" || role == "admin")
+		testLogin := randomdata.SillyName()
+		_, err := authUsecase.Signup(ctx, testLogin, testPassword, model.RoleBuyer)
+		ctxA.Assert().NoError(err)
 
-			meta, err := usecase.GetMetaInfoByUserID(ctx, tt.userID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().Equal(user.Name, meta.Name)
+		newUser, err := userRepository.GetByLogin(ctx, testLogin)
+		ctxA.Assert().NoError(err)
 
-			updatedUser := model.User{
-				ID:    user.ID,
-				Name:  "Mark",
-				Login: "updated",
-			}
-			err = usecase.UpdateByID(ctx, tt.userID, updatedUser)
-			ctxA.Assert().NoError(err)
+		user, err := userUsecase.GetByID(ctx, newUser.ID)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().Equal(newUser.ID, user.ID)
+		ctxA.Assert().NotEmpty(user.Role)
+		ctxA.Assert().NotEmpty(user.Name)
+		ctxA.Assert().NotEmpty(user.Login)
+		ctxA.Assert().NotEmpty(user.Password)
 
-			afterUpdate, err := usecase.GetByID(ctx, tt.userID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().Equal(updatedUser.Name, afterUpdate.Name)
-			ctxA.Assert().Equal(updatedUser.Login, afterUpdate.Login)
+		role, err := userUsecase.GetRoleByID(ctx, newUser.ID)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().True(role == "buyer" || role == "seller" || role == "admin")
 
-			err = usecase.UpdatePassword(ctx, tt.userID, "wrongPass", tt.newPass)
-			ctxA.Assert().Error(err)
-			ctxA.Assert().ErrorIs(err, model.ErrWrongPassword)
+		meta, err := userUsecase.GetMetaInfoByUserID(ctx, newUser.ID)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().Equal(user.Name, meta.Name)
 
-			err = usecase.UpdatePassword(ctx, tt.userID, tt.oldPass, tt.newPass)
-			ctxA.Assert().NoError(err)
+		updatedUser := model.User{
+			ID:    user.ID,
+			Name:  "Mark",
+			Login: text.RandStringRunes(10),
+		}
+		err = userUsecase.UpdateByID(ctx, newUser.ID, updatedUser)
+		ctxA.Assert().NoError(err)
 
-			userAfterPass, err := usecase.GetByID(ctx, tt.userID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().NotEqual(user.Password, userAfterPass.Password)
-		})
-	}
+		afterUpdate, err := userUsecase.GetByID(ctx, newUser.ID)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().Equal(updatedUser.Name, afterUpdate.Name)
+		ctxA.Assert().Equal(updatedUser.Login, afterUpdate.Login)
+
+		err = userUsecase.UpdatePassword(ctx, newUser.ID, "wrongPass", newTestPassword)
+		ctxA.Assert().Error(err)
+		ctxA.Assert().ErrorIs(err, model.ErrWrongPassword)
+
+		err = userUsecase.UpdatePassword(ctx, newUser.ID, testPassword, newTestPassword)
+		ctxA.Assert().NoError(err)
+
+		userAfterPass, err := userUsecase.GetByID(ctx, newUser.ID)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().NotEqual(user.Password, userAfterPass.Password)
+	})
 }

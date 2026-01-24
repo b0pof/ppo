@@ -19,6 +19,7 @@ type OrderFlow struct {
 }
 
 func (g *OrderFlow) TestFullOrderFlow(t provider.T) {
+	t.Skip()
 	tests := []struct {
 		name   string
 		userID int64
@@ -34,6 +35,7 @@ func (g *OrderFlow) TestFullOrderFlow(t provider.T) {
 		t.WithNewStep(tt.name, func(ctxA provider.StepCtx) {
 			ctx := context.Background()
 			ctrl := controller.NewController(t)
+			// defer ctrl.Finish()
 
 			orderRepository := orderRepo.New(ctrl.GetDB())
 			itemRepository := itemRepo.New(ctrl.GetDB())

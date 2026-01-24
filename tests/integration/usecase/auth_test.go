@@ -2,7 +2,9 @@ package usecase_test
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/google/uuid"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
@@ -18,64 +20,54 @@ type AuthTest struct {
 }
 
 func (g *AuthTest) TestFullAuthFlow(t provider.T) {
-	tests := []struct {
-		name     string
-		login    string
-		password string
-		role     string
-	}{
-		{
-			name:     "auth usecase full flow",
-			login:    "test_user_login",
-			password: "TestPass123!",
-			role:     "buyer",
-		},
-	}
+	t.WithNewStep("auth flow", func(ctxA provider.StepCtx) {
+		ctx := context.Background()
+		ctrl := controller.NewController(t)
+		// defer ctrl.Finish()
 
-	for _, test := range tests {
-		tt := test
-		t.WithNewStep(tt.name, func(ctxA provider.StepCtx) {
-			ctx := context.Background()
-			ctrl := controller.NewController(t)
+		authR := authRepo.New(ctrl.GetRedis())
+		userR := userRepo.New(ctrl.GetDB())
+		usecase := authUsecase.New(authR, userR)
 
-			authR := authRepo.New(ctrl.GetRedis())
-			userR := userRepo.New(ctrl.GetDB())
-			usecase := authUsecase.New(authR, userR)
+		testUser := model.User{
+			Login:    uuid.New().String(),
+			Name:     uuid.New().String(),
+			Role:     model.RoleBuyer,
+			Password: uuid.New().String(),
+		}
 
-			sessionID, err := usecase.Signup(ctx, tt.login, tt.password, tt.role)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().NotEmpty(sessionID)
+		sessionID, err := usecase.Signup(ctx, testUser.Login, testUser.Password, testUser.Role)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().NotEmpty(sessionID)
 
-			user, err := userR.GetByLogin(ctx, tt.login)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().Equal(tt.role, user.Role)
+		user, err := userR.GetByLogin(ctx, testUser.Login)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().Equal(testUser.Role, user.Role)
 
-			ctxA.Assert().True(usecase.IsLoggedIn(sessionID))
+		ctxA.Assert().True(usecase.IsLoggedIn(sessionID))
 
-			userID, err := usecase.GetUserIDBySessionID(sessionID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().Equal(user.ID, userID)
+		userID, err := usecase.GetUserIDBySessionID(sessionID)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().Equal(user.ID, userID)
 
-			err = usecase.Logout(sessionID)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().False(usecase.IsLoggedIn(sessionID))
+		err = usecase.Logout(sessionID)
+		ctxA.Assert().NoError(err, fmt.Sprintf("NOT FOUND: session id = %s", sessionID))
+		ctxA.Assert().False(usecase.IsLoggedIn(sessionID))
 
-			newSessionID, err := usecase.Login(ctx, tt.login, tt.password)
-			ctxA.Assert().NoError(err)
-			ctxA.Assert().NotEmpty(newSessionID)
-			ctxA.Assert().True(usecase.IsLoggedIn(newSessionID))
+		newSessionID, err := usecase.Login(ctx, testUser.Login, testUser.Password)
+		ctxA.Assert().NoError(err)
+		ctxA.Assert().NotEmpty(newSessionID)
+		ctxA.Assert().True(usecase.IsLoggedIn(newSessionID))
 
-			_, err = usecase.Login(ctx, tt.login, "wrongpassword")
-			ctxA.Assert().Error(err)
-			ctxA.Assert().ErrorIs(err, model.ErrWrongPassword)
+		_, err = usecase.Login(ctx, testUser.Login, "wrongpassword")
+		ctxA.Assert().ErrorIs(err, model.ErrWrongPassword)
 
-			_, err = usecase.Login(ctx, "", "")
-			ctxA.Assert().Error(err)
-			ctxA.Assert().ErrorIs(err, model.ErrInvalidInput)
+		_, err = usecase.Login(ctx, "", "")
+		ctxA.Assert().Error(err)
+		ctxA.Assert().ErrorIs(err, model.ErrInvalidInput)
 
-			_, err = usecase.Signup(ctx, "", "", "")
-			ctxA.Assert().Error(err)
-			ctxA.Assert().ErrorIs(err, model.ErrInvalidInput)
-		})
-	}
+		_, err = usecase.Signup(ctx, "", "", "")
+		ctxA.Assert().Error(err)
+		ctxA.Assert().ErrorIs(err, model.ErrInvalidInput)
+	})
 }

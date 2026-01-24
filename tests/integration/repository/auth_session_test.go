@@ -32,6 +32,7 @@ func (g *RepoSessionCreateDelete) TestLoginLogout(t provider.T) {
 		tt := test
 		t.WithNewStep(tt.name, func(ctx provider.StepCtx) {
 			ctrl := controller.NewController(t)
+			// defer ctrl.Finish()
 
 			authRepository := authRepo.New(ctrl.GetRedis())
 

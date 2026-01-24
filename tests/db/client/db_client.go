@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -92,14 +93,15 @@ func cleanUpDB(db *sqlx.DB) error {
 	return nil
 }
 
-func CleanUpDB(t provider.T, db *sqlx.DB) error {
+func CleanUpDB(db *sqlx.DB) error {
 	var err error
-	name := t.Name()
+	//name := t.Name()
 	start := time.Now()
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		err = cleanUpDB(db)
 		if err != nil {
-			t.Logf("Failed to cleanup for test %s, attempt %d: %s", name, attempt, err)
+			//t.Logf("Failed to cleanup for test %s, attempt %d: %s", name, attempt, err)
+			log.Printf("Failed to cleanup attempt %d: %s", attempt, err)
 			time.Sleep(delay * time.Duration(attempt))
 			continue
 		}
@@ -108,7 +110,7 @@ func CleanUpDB(t provider.T, db *sqlx.DB) error {
 	if err != nil {
 		return fmt.Errorf("failed to exec cleanup: %w", err)
 	}
-	t.Logf("Cleanup for test %s finished in %s", name, time.Since(start))
+	log.Printf("Cleanup finished in %s", time.Since(start))
 
 	return nil
 }
@@ -125,8 +127,8 @@ func prepareDB(db *sqlx.DB) error {
 			testfixtures.DangerousSkipTestDatabaseCheck(),
 			testfixtures.Database(sqlDB),
 			testfixtures.Dialect("postgres"),
-			testfixtures.Directory("../../db/fixtures"),
-			testfixtures.ResetSequencesTo(10000+rand.Int63n(10000)),
+			testfixtures.Directory("./tests/db/client"),
+			testfixtures.ResetSequencesTo(100+rand.Int63n(1_000_000_000)),
 		)
 		if err != nil {
 			return err
@@ -137,14 +139,14 @@ func prepareDB(db *sqlx.DB) error {
 	return s.fixtures.Load()
 }
 
-func PrepareDB(t provider.T, db *sqlx.DB) error {
+func PrepareDB(db *sqlx.DB) error {
 	var err error
-	name := t.Name()
+	//name := t.Name()
 	start := time.Now()
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		err = prepareDB(db)
 		if err != nil {
-			t.Logf("Failed to prepare DB for test %s, attempt %d: %s", name, attempt, err)
+			log.Printf("Failed to prepare DB, attempt %d: %s", attempt, err)
 			time.Sleep(delay * time.Duration(attempt))
 			continue
 		}
@@ -153,7 +155,7 @@ func PrepareDB(t provider.T, db *sqlx.DB) error {
 	if err != nil {
 		return fmt.Errorf("failed to prepare db: %w", err)
 	}
-	t.Logf("DB preparation for test %s finished in %s", name, time.Since(start))
+	log.Printf("DB preparation finished in %s", time.Since(start))
 
 	return nil
 }

@@ -3,13 +3,11 @@ package controller
 import (
 	"net/http"
 
+	"github.com/b0pof/ppo/tests/db/client"
 	"github.com/go-redis/redis"
 	"github.com/jmoiron/sqlx"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-
-	"github.com/b0pof/ppo/tests/db/client"
 )
 
 type Controller struct {
@@ -26,15 +24,15 @@ func NewDatabase(t provider.T) *sqlx.DB {
 func NewController(t provider.T) *Controller {
 	redisClient := client.RedisConnect()
 
-	client.CleanUpRedis(t, redisClient)
+	//client.CleanUpRedis(t, redisClient)
 
 	db := client.DbConnect()
-
-	err := client.CleanUpDB(t, db)
-	require.NoError(t, err, "db cleanup failed")
-
-	err = client.PrepareDB(t, db)
-	require.NoError(t, err, "db preparation failed")
+	//
+	//err := client.CleanUpDB(db)
+	//require.NoError(t, err, "db cleanup failed")
+	//
+	//err = client.PrepareDB(db)
+	//require.NoError(t, err, "db preparation failed")
 
 	return &Controller{
 		t:          t,

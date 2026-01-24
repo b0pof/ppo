@@ -50,7 +50,7 @@ Bizon - это площадка, на которой покупатель мож
 
 ## Use-case диаграмма
 
-![use-case диаграмма](img/ppo-usecase.png)
+![use-case диаграмма](img/ppo-userUsecase.png)
 
 ## ER-диаграмма сущностей
 

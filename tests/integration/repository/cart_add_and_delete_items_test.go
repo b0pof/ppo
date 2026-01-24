@@ -42,6 +42,8 @@ func (g *RepoCartFlow) TestAddItemsToCart(t provider.T) {
 		tt := test
 		t.WithNewStep(tt.name, func(ctxA provider.StepCtx) {
 			ctrl := controller.NewController(t)
+			// defer ctrl.Finish() // TODO почему тесты падают из-за закрытия бд
+			// TODO lock на уровне БД при создании контроллера и освобождении при Finish() для предотвращения удаления данных
 
 			cartRepository := cartRepo.New(ctrl.GetDB())
 
