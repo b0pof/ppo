@@ -24,9 +24,7 @@ install-tools: ## Установить инструменты для анали�
 	go install mvdan.cc/gofumpt@latest
 	go install honnef.co/go/tools/cmd/staticcheck@latest
 	go install golang.org/x/vuln/cmd/govulncheck@latest
-	go install github.com/GoASTScanner/gas@latest
 	go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
-	# go install github.com/catenacyber/halstead@latest
 
 
 .PHONY: lint
@@ -60,11 +58,6 @@ fmt-check: ## Проверка форматирования кода
 staticcheck: ## Статический анализ кода
 	@echo "Running staticcheck..."
 	staticcheck ./...
-
-.PHONY: security
-security: ## Security check
-	@echo "Running security checks..."
-	gas ./...
 
 .PHONY: quality
 quality: lint vet fmt-check cyclocomplex staticcheck
