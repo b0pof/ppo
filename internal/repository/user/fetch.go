@@ -29,6 +29,41 @@ func (r *Repository) GetByID(ctx context.Context, userID int64) (model.User, err
 	return convertUser(user), nil
 }
 
+func (r *Repository) GetTempPasswords(ctx context.Context, userID int64) (string, string, error) {
+	q := `
+		select old, new
+		from temp_password
+		where user_id = $1;
+	`
+
+	var tmp tempPwd
+
+	err := r.db.GetContext(ctx, &tmp, q, userID)
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", "", model.ErrNotFound
+	}
+	if err != nil {
+		return "", "", fmt.Errorf("user repository.GetByLogin: %w", err)
+	}
+
+	return tmp.Old, tmp.New, nil
+}
+
+func (r *Repository) SaveTempPasswords(ctx context.Context, userID int64, old, new string) error {
+	q := `
+		insert
+		into temp_password (user_id, old, new)
+		values ($1, $2, $3);
+	`
+
+	_, err := r.db.ExecContext(ctx, q, userID, old, new)
+	if err != nil {
+		return fmt.Errorf("user repository.GetByLogin: %w", err)
+	}
+
+	return nil
+}
+
 func (r *Repository) GetByLogin(ctx context.Context, login string) (model.User, error) {
 	q := `
 		select id, name, login, role, phone, password

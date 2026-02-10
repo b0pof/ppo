@@ -9,7 +9,7 @@ const (
 	userNamePattern = `^[А-Яа-яA-Za-z0-9_]*$`
 	loginPattern    = `^[A-Za-z0-9_]*$`
 	phonePattern    = `^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$`
-	passwordPattern = `^[A-Za-z0-9_]*$`
+	passwordPattern = `^[A-Za-z0-9_]*$` //nolint:gosec
 
 	itemNamePattern        = `^[А-Яа-яA-Za-z0-9_ ]*$`
 	itemDescriptionPattern = `^[А-Яа-яA-Za-z0-9_ ]*$`
@@ -21,7 +21,7 @@ const (
 func ValidateUser(user User) error {
 	var err error
 
-	//if user.Name != "" {
+	// if user.Name != "" {
 	err = ValidateUserName(user.Name)
 	if err != nil {
 		return err

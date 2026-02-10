@@ -19,7 +19,6 @@ func (h *Cart) GetApi1UsersIdCartItems(w http.ResponseWriter, r *http.Request, i
 	}
 
 	response.OK(w, cartContentToDTO(cart))
-	return
 }
 
 func cartContentToDTO(cart model.CartContent) dto.GetCartItemsResponse {

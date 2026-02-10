@@ -17,5 +17,4 @@ func (h *Cart) DeleteApi1UsersIdCartItems(w http.ResponseWriter, r *http.Request
 	}
 
 	response.OK(w, nil)
-	return
 }

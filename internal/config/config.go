@@ -17,11 +17,18 @@ const (
 	defaultConfigPathLocal = "config/app.yml"
 )
 
+var GlobalCfg Config
+
+func init() {
+	GlobalCfg = *MustLoad()
+}
+
 type Config struct {
 	Service  ServiceConfig  `yaml:"service"`
 	Server   ServerConfig   `yaml:"server"`
 	Postgres PostgresConfig `yaml:"postgres"`
 	Redis    RedisConfig    `yaml:"redis"`
+	SMTP     SMTPConfig     `yaml:"smtp"`
 }
 
 type ServerConfig struct {
@@ -31,6 +38,13 @@ type ServerConfig struct {
 
 type ServiceConfig struct {
 	SessionTTL time.Duration `yaml:"session_ttl"`
+}
+
+type SMTPConfig struct {
+	FromAddress string `yaml:"from_address" env:"SMTP_FROM_ADDRESS"`
+	Password    string `yaml:"password" env:"SMTP_PASSWORD"`
+	Host        string `yaml:"host" env:"SMTP_HOST"`
+	Port        string `yaml:"port" env:"SMTP_PORT"`
 }
 
 type PostgresConfig struct {

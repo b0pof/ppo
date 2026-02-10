@@ -1,10 +1,9 @@
-# user.yml
-#- id: 1
-#  role: 'buyer'
-#  name: 'User1 Name'
-#  login: 'user1'
-#  phone: '88005553535'
-#  password: '$2a$10$fMfBQXaBUDqfl5VU2xOmpeUtX.l.Vx1ZfkaDADAcnzr7hHYZqPru.'
+- id: 1
+  role: 'buyer'
+  name: 'User1 Name'
+  login: 'user1'
+  phone: '88005553535'
+  password: '$2a$10$fMfBQXaBUDqfl5VU2xOmpeUtX.l.Vx1ZfkaDADAcnzr7hHYZqPru.'
 
 - id: 2
   role: 'seller'

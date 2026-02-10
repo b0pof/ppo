@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/b0pof/ppo/internal/config"
 )
@@ -15,8 +16,9 @@ type Server struct {
 func NewServer(r http.Handler, cfg config.ServerConfig) *Server {
 	return &Server{
 		httpServer: &http.Server{
-			Addr:    fmt.Sprintf(":%s", cfg.Port),
-			Handler: r,
+			ReadHeaderTimeout: 3 * time.Second,
+			Addr:              fmt.Sprintf(":%s", cfg.Port),
+			Handler:           r,
 		},
 	}
 }

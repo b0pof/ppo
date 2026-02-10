@@ -24,5 +24,4 @@ func (h *Auth) GetApi1Auth(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.OK(w, nil)
-	return
 }

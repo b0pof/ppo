@@ -1,4 +1,4 @@
-//go:build e2e
+////go:build e2e
 
 package scenario
 
@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 
+	dto "github.com/b0pof/ppo/internal/generated"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
-	dto "github.com/b0pof/ppo/internal/generated"
 	"github.com/b0pof/ppo/tests/controller"
 )
 

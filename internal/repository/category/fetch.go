@@ -40,14 +40,6 @@ func (r *Repository) FetchCategoryExtended(ctx context.Context, categoryID int64
         WHERE c.id = $1;
     `
 
-	var dbResult struct {
-		ID         int64           `db:"id"`
-		Name       string          `db:"name"`
-		ParentID   *int64          `db:"parent.id"`
-		ParentName *string         `db:"parent.name"`
-		Children   json.RawMessage `db:"children"`
-	}
-
 	err := r.db.GetContext(ctx, &dbResult, q, categoryID)
 	if err != nil {
 		return model.CategoryExtended{}, fmt.Errorf("repository.FetchCategoryExtended: %w", err)

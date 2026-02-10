@@ -23,5 +23,4 @@ func (h *Item) DeleteApi1ItemsId(w http.ResponseWriter, r *http.Request, id int6
 	}
 
 	response.OK(w, nil)
-	return
 }

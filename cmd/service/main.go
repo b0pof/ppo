@@ -40,19 +40,19 @@ import (
 	orderRepo "github.com/b0pof/ppo/internal/repository/order"
 	reviewRepo "github.com/b0pof/ppo/internal/repository/review"
 	userRepo "github.com/b0pof/ppo/internal/repository/user"
+	verificationRepo "github.com/b0pof/ppo/internal/repository/verification"
 	"github.com/b0pof/ppo/internal/server"
 	authUc "github.com/b0pof/ppo/internal/usecase/auth"
 	cartUc "github.com/b0pof/ppo/internal/usecase/cart"
 	itemUc "github.com/b0pof/ppo/internal/usecase/item"
+	verificationCodeUc "github.com/b0pof/ppo/internal/usecase/notification/post/verification/code"
 	orderUc "github.com/b0pof/ppo/internal/usecase/order"
 	userUc "github.com/b0pof/ppo/internal/usecase/user"
 )
 
 const timeout = 3 * time.Second
 
-////go:embed api/schema.yml
-//var spec embed.FS
-
+//nolint:funlen
 func main() {
 	cfg := config.MustLoad()
 
@@ -75,14 +75,18 @@ func main() {
 	orderRepository := orderRepo.New(db)
 	categoryRepository := categoryRepo.New(db)
 	reviewRepository := reviewRepo.New(db)
+	verificationRepository := verificationRepo.New(db)
 	// !>
 
 	// <! Usecases
-	authUsecase := authUc.New(authRepository, userRepository)
+	sendVerificationCodeUsecase := verificationCodeUc.New(cfg.SMTP)
 	cartUsecase := cartUc.New(cartRepository)
+	authUsecase := authUc.New(authRepository, verificationRepository, userRepository, sendVerificationCodeUsecase)
 	itemUsecase := itemUc.New(itemRepository)
 	orderUsecase := orderUc.New(orderRepository, itemRepository, cartRepository)
-	userUsecase := userUc.New(userRepository)
+	userUsecase := userUc.New(userRepository, authUsecase)
+
+	authUsecase.SetUserUsecase(userUsecase)
 	// !>
 
 	// <! Router
@@ -141,9 +145,9 @@ func main() {
 		ExposedHeaders:   []string{"Content-Length"},
 		AllowCredentials: true,
 	})
-	r.Use(authMiddleware.New(authUsecase, userUsecase, cfg.Server.Mode))
+	r.Use(authMiddleware.New(authUsecase, verificationRepository, userUsecase, cfg.Server.Mode))
 	r.Use(observabilityMiddleware.New(metrics.NewMetrics(reg), log))
-	//r.Use(permsMiddleware.New())
+	// r.Use(permsMiddleware.New())
 	// !>
 
 	// <! Handlers

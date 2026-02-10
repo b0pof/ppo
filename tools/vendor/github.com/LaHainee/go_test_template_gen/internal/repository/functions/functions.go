@@ -2,7 +2,6 @@ package functions
 
 import (
 	"errors"
-	"github.com/LaHainee/go_test_template_gen/internal/util/pointer"
 	"go/ast"
 	"go/parser"
 	"go/scanner"
@@ -10,6 +9,8 @@ import (
 	"io/fs"
 	"strings"
 	"syscall"
+
+	"github.com/LaHainee/go_test_template_gen/internal/util/pointer"
 
 	"github.com/LaHainee/go_test_template_gen/internal/model"
 )

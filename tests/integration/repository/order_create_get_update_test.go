@@ -4,21 +4,17 @@ import (
 	"context"
 	"fmt"
 
-	cartRepo "github.com/b0pof/ppo/internal/repository/cart"
-	itemRepo "github.com/b0pof/ppo/internal/repository/item"
-	cartUc "github.com/b0pof/ppo/internal/usecase/cart"
-	itemUc "github.com/b0pof/ppo/internal/usecase/item"
 	"github.com/ozontech/allure-go/pkg/framework/provider"
 	"github.com/ozontech/allure-go/pkg/framework/suite"
 
 	"github.com/b0pof/ppo/internal/model"
+	cartRepo "github.com/b0pof/ppo/internal/repository/cart"
+	itemRepo "github.com/b0pof/ppo/internal/repository/item"
 	orderRepo "github.com/b0pof/ppo/internal/repository/order"
+	cartUc "github.com/b0pof/ppo/internal/usecase/cart"
+	itemUc "github.com/b0pof/ppo/internal/usecase/item"
 	"github.com/b0pof/ppo/tests/controller"
 	"github.com/b0pof/ppo/tests/integration/common/creator/user"
-)
-
-const (
-	timeParseLayout = "2006-01-02 15:04:05.999999 -07:00"
 )
 
 type RepoOrderFlow struct {

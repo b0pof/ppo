@@ -2,8 +2,9 @@ package loop
 
 import (
 	"fmt"
-	domain "github.com/LaHainee/go_test_template_gen/internal/domain/function"
 	"strings"
+
+	domain "github.com/LaHainee/go_test_template_gen/internal/domain/function"
 
 	"github.com/LaHainee/go_test_template_gen/internal/model"
 	test "github.com/LaHainee/go_test_template_gen/internal/presenter/tests/model"

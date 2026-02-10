@@ -91,77 +91,77 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    user: root
-    env_file:
-      - '.env'
-    ports:
-      - '9090:9090'
-    volumes:
-      - ./prometheus/:/etc/prometheus/
-      - prometheus-data:/prometheus
-    command:
-      - --config.file=/etc/prometheus/prometheus.yaml
-    hostname: prometheus
-    environment:
-      TZ: "Europe/Moscow"
+#  prometheus:
+#    image: prom/prometheus
+#    container_name: prometheus
+#    user: root
+#    env_file:
+#      - '.env'
+#    ports:
+#      - '9090:9090'
+#    volumes:
+#      - ./prometheus/:/etc/prometheus/
+#      - prometheus-data:/prometheus
+#    command:
+#      - --config.file=/etc/prometheus/prometheus.yaml
+#    hostname: prometheus
+#    environment:
+#      TZ: "Europe/Moscow"
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    user: root
-    env_file:
-      - '.env'
-    depends_on:
-      - prometheus
-    ports:
-      - '3000:3000'
-    volumes:
-      - grafana-data:/var/lib/grafana
-    hostname: grafana
-    environment:
-      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/monitoring/
-      - GF_SERVER_SERVE_FROM_SUB_PATH=true
-      - TERM=linux
-      - GF_LOG_LEVEL=debug
-      - GF_DATAPROXY_LOGGING=true
-      - GF_DEFAULT_APP_MODE=development
-      - TZ="Europe/Moscow"
+#  grafana:
+#    image: grafana/grafana
+#    container_name: grafana
+#    user: root
+#    env_file:
+#      - '.env'
+#    depends_on:
+#      - prometheus
+#    ports:
+#      - '3000:3000'
+#    volumes:
+#      - grafana-data:/var/lib/grafana
+#    hostname: grafana
+#    environment:
+#      - GF_SERVER_ROOT_URL=%(protocol)s://%(domain)s:%(http_port)s/monitoring/
+#      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+#      - TERM=linux
+#      - GF_LOG_LEVEL=debug
+#      - GF_DATAPROXY_LOGGING=true
+#      - GF_DEFAULT_APP_MODE=development
+#      - TZ="Europe/Moscow"
 
-  node-exporter:
-    image: prom/node-exporter
-    container_name: exporter
-    volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
-    hostname: exporter
-    command:
-      - --path.procfs=/host/proc
-      - --path.sysfs=/host/sys
-      - --collector.filesystem.ignored-mount-points
-      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
-    ports:
-      - '9100:9100'
-    restart: unless-stopped
-    environment:
-      TZ: "Europe/Moscow"
+#  node-exporter:
+#    image: prom/node-exporter
+#    container_name: exporter
+#    volumes:
+#      - /proc:/host/proc:ro
+#      - /sys:/host/sys:ro
+#      - /:/rootfs:ro
+#    hostname: exporter
+#    command:
+#      - --path.procfs=/host/proc
+#      - --path.sysfs=/host/sys
+#      - --collector.filesystem.ignored-mount-points
+#      - ^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)
+#    ports:
+#      - '9100:9100'
+#    restart: unless-stopped
+#    environment:
+#      TZ: "Europe/Moscow"
 
-  loki:
-    image: grafana/loki:2.9.4
-    ports:
-      - "3101:3100"
+#  loki:
+#    image: grafana/loki:2.9.4
+#    ports:
+#      - "3101:3100"
 
-  promtail:
-    image: grafana/promtail:2.9.4
-    volumes:
-      - ./logs:/logs
-      - ./loki/promtail.yaml:/etc/promtail/config.yaml
-    command: -config.file=/etc/promtail/config.yaml
-    depends_on:
-      - loki
+#  promtail:
+#    image: grafana/promtail:2.9.4
+#    volumes:
+#      - ./logs:/logs
+#      - ./loki/promtail.yaml:/etc/promtail/config.yaml
+#    command: -config.file=/etc/promtail/config.yaml
+#    depends_on:
+#      - loki
 
 #  pgadmin:
 #    image: dpage/pgadmin4
@@ -194,9 +194,9 @@ volumes:
   postgres-ppo-data:
   postgres-replica-ppo-data:
   redis-ppo-data:
-  grafana-data:
-  prometheus-data:
-  pgadmin-data:
+#  grafana-data:
+#  prometheus-data:
+#  pgadmin-data:
 
 networks:
   pg_net:

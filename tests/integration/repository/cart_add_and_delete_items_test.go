@@ -61,7 +61,7 @@ func (g *RepoCartFlow) TestAddItemsToCart(t provider.T) {
 			// add items to cart
 			for _, item := range tt.itemsToBuy {
 
-				for _ = range item.Count {
+				for range item.Count {
 					amount, err = cartRepository.AddItemToCart(ctx, tt.userID, item.ID)
 					ctxA.Assert().NoError(err)
 				}

@@ -2,8 +2,9 @@ package presenter
 
 import (
 	"fmt"
-	"github.com/LaHainee/go_test_template_gen/internal/model"
 	"strings"
+
+	"github.com/LaHainee/go_test_template_gen/internal/model"
 )
 
 const defaultTestCase = "{},"

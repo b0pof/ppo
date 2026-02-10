@@ -24,5 +24,4 @@ func (h *Order) PostApi1UsersIdOrders(w http.ResponseWriter, r *http.Request, id
 	}
 
 	response.OK(w, dto.CreateOrderResponse{OrderID: orderID})
-	return
 }

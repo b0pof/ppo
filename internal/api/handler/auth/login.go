@@ -39,16 +39,18 @@ func (h *Auth) PostApi1Auth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{
-		Name:     "session_id",
-		Value:    sessionID,
-		HttpOnly: true,
-		Expires:  time.Now().Add(h.sessionTTL),
-		Path:     "/",
+	if sessionID != nil {
+		response.OK(w, "Код отправлен на почту")
+		cookie := &http.Cookie{
+			Name:     "session_id",
+			Value:    *sessionID,
+			HttpOnly: true,
+			Expires:  time.Now().Add(h.sessionTTL),
+			Path:     "/",
+		}
+		http.SetCookie(w, cookie)
+		return
 	}
 
-	http.SetCookie(w, cookie)
-
-	response.OK(w, sessionID)
-	return
+	response.OK(w, "Код отправлен на почту")
 }

@@ -25,5 +25,4 @@ func (h *Cart) PostApi1UsersIdCartItems(w http.ResponseWriter, r *http.Request, 
 	}
 
 	response.OK(w, dto.AddItemResponse{Count: newCount})
-	return
 }

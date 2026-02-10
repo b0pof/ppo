@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+
 	"github.com/LaHainee/go_test_template_gen/internal/presenter"
 	"github.com/LaHainee/go_test_template_gen/internal/repository/functions"
 	"github.com/LaHainee/go_test_template_gen/internal/repository/parse/facade/ast"

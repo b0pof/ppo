@@ -7,7 +7,7 @@ import (
 )
 
 func TestSuite(t *testing.T) {
-	//suite.RunSuite(t, new(RepoItemFlow))
+	// suite.RunSuite(t, new(RepoItemFlow))
 	suite.RunSuite(t, new(RepoCartFlow))
 	suite.RunSuite(t, new(RepoSessionCreateDelete))
 	suite.RunSuite(t, new(RepoOrderFlow))

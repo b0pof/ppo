@@ -6,6 +6,28 @@ on:
       - main
 
 jobs:
+  quality-checks:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.25
+          cache: true
+          cache-dependency-path: go.sum
+
+      - name: Install quality tools
+        run: |
+          make install-tools
+
+      - name: Run quality checks
+        run: |
+          make quality
+
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest

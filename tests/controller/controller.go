@@ -18,21 +18,21 @@ type Controller struct {
 }
 
 func NewDatabase(t provider.T) *sqlx.DB {
-	return client.DbConnect()
+	return client.DBConnect()
 }
 
 func NewController(t provider.T) *Controller {
 	redisClient := client.RedisConnect()
 
-	//client.CleanUpRedis(t, redisClient)
+	// client.CleanUpRedis(t, redisClient)
 
-	db := client.DbConnect()
+	db := client.DBConnect()
 	//
-	//err := client.CleanUpDB(db)
-	//require.NoError(t, err, "db cleanup failed")
+	// err := client.CleanUpDB(db)
+	// require.NoError(t, err, "db cleanup failed")
 	//
-	//err = client.PrepareDB(db)
-	//require.NoError(t, err, "db preparation failed")
+	// err = client.PrepareDB(db)
+	// require.NoError(t, err, "db preparation failed")
 
 	return &Controller{
 		t:          t,

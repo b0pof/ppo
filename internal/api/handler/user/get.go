@@ -24,7 +24,6 @@ func (h *User) GetApi1UsersId(w http.ResponseWriter, r *http.Request, id int64) 
 	}
 
 	response.OK(w, toUserDTO(user))
-	return
 }
 
 func toUserDTO(user model.User) dto.UserResponse {

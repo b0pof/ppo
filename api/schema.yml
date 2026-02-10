@@ -68,17 +68,67 @@ paths:
               $ref: '#/components/schemas/LoginRequest'
       responses:
         '200':
-          description: Successful login
+          description: Login successful, requires 2FA
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  token:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
                     type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    example: "Verification code sent to your email"
+                  requires_2fa:
+                    type: boolean
+                    example: true
+                  session_token:
+                    type: string
+                    description: "Temporary token for 2FA state"
+                    example: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
+                  expires_in:
+                    type: integer
+                    description: "Session token lifetime in seconds"
+                    example: 300
         '401':
           description: Invalid credentials
+
+  /api/auth/verify-2fa:
+    post:
+      summary: Verify 2FA code
+      tags: [ Authentication ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Verify2FARequest'
+      responses:
+        '200':
+          description: 2FA verification successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Verify2FAResponse'
+        '400':
+          description: Invalid request or code expired
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Verify2FAResponse'
+        '401':
+          description: Invalid verification code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Verify2FAResponse'
+        '429':
+          description: Too many verification attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Verify2FAResponse'
 
   /api/1/users/{id}:
     get:
@@ -1253,6 +1303,49 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ItemCard'
+
+    Verify2FARequest:
+      type: object
+      required:
+        - email
+        - code
+      properties:
+        email:
+          type: string
+          example: "user@example.com"
+        code:
+          type: string
+          example: "123456"
+          description: "Verification code"
+
+    Verify2FAResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+          description: "Verification result"
+        message:
+          type: string
+          example: "2FA verification successful"
+          description: "Human readable message"
+        session:
+          type: string
+          nullable: true
+          description: "Session ID"
+        expires_in:
+          type: integer
+          nullable: true
+          example: 180
+          description: "Remaining time for verification in seconds"
+        retry_available:
+          type: boolean
+          example: true
+          description: "Whether user can request new code"
+        retry_after:
+          type: integer
+          nullable: true
+          description: "Remaining time for the next try"
 
 tags:
   - name: Authentication

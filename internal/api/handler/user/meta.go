@@ -24,7 +24,6 @@ func (h *User) GetApi1UsersIdMeta(w http.ResponseWriter, r *http.Request, id int
 	}
 
 	response.OK(w, toUserMetaDTO(user))
-	return
 }
 
 func toUserMetaDTO(user model.UserMetaInfo) dto.UserMetaResponse {

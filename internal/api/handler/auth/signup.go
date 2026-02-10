@@ -3,7 +3,6 @@ package auth
 import (
 	"errors"
 	"net/http"
-	"time"
 
 	dto "github.com/b0pof/ppo/internal/generated"
 
@@ -21,7 +20,7 @@ func (h *Auth) PostApi1Users(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	sessionID, err := h.auth.Signup(ctx, data.Login, data.Password, string(data.Role))
+	err = h.auth.Signup(ctx, data.Login, data.Password, string(data.Role))
 	if errors.Is(err, model.ErrAlreadyExists) {
 		response.BadRequest(w, "Пользователь уже существует")
 		return
@@ -40,16 +39,5 @@ func (h *Auth) PostApi1Users(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cookie := &http.Cookie{
-		Name:     "session_id",
-		Value:    sessionID,
-		HttpOnly: true,
-		Expires:  time.Now().Add(h.sessionTTL),
-		Path:     "/",
-	}
-
-	http.SetCookie(w, cookie)
-
-	response.OK(w, sessionID)
-	return
+	response.OK(w, "Код отправлен на почту")
 }

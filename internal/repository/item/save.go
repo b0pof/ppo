@@ -23,7 +23,6 @@ func (r *Repository) Create(ctx context.Context, item model.Item) (int64, error)
 		item.Description,
 		item.ImgSrc,
 	)
-
 	if err != nil {
 		return 0, fmt.Errorf("item repository.Create: %w", err)
 	}

@@ -2,9 +2,10 @@ package arguments
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/LaHainee/go_test_template_gen/internal/model"
 	"github.com/LaHainee/go_test_template_gen/internal/presenter/tests/source/loop"
-	"strings"
 )
 
 type Structure struct{}

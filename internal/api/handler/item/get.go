@@ -25,7 +25,6 @@ func (h *Item) GetApi1ItemsId(w http.ResponseWriter, r *http.Request, id int64) 
 	}
 
 	response.OK(w, itemToDTO(item))
-	return
 }
 
 func itemToDTO(item model.ItemExtended) dto.Item {

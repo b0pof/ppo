@@ -12,13 +12,13 @@ func main() {
 }
 
 func Prepare() {
-	db := client.DbConnect()
+	db := client.DBConnect()
 	defer func() {
 		_ = db.Close()
 	}()
 
-	//err := client.CleanUpDB(db)
-	//assert.NoError(&testing.T{}, err, "db cleanup failed")
+	// err := client.CleanUpDB(db)
+	// assert.NoError(&testing.T{}, err, "db cleanup failed")
 
 	err := client.PrepareDB(db)
 	assert.NoError(&testing.T{}, err, "db preparation failed")

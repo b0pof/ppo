@@ -29,7 +29,7 @@ type state struct {
 
 var s = &state{}
 
-func DbConnect() *sqlx.DB {
+func DBConnect() *sqlx.DB {
 	ctx, cancel := context.WithTimeout(context.Background(), connTimeout)
 	defer cancel()
 
@@ -50,15 +50,15 @@ func RedisConnect() *redis.Client {
 }
 
 func cleanTable(table string, tx *sqlx.Tx) error {
-	_, err := tx.Exec(fmt.Sprintf("ALTER TABLE \"%s\" DISABLE TRIGGER ALL;", table))
+	_, err := tx.Exec(fmt.Sprintf("ALTER TABLE \"%q\" DISABLE TRIGGER ALL;", table))
 	if err != nil {
 		return fmt.Errorf("failed to disable trigger: %w", err)
 	}
-	_, err = tx.Exec(fmt.Sprintf("DELETE FROM \"%s\" WHERE TRUE;", table))
+	_, err = tx.Exec(fmt.Sprintf("DELETE FROM \"%q\" WHERE TRUE;", table))
 	if err != nil {
 		return fmt.Errorf("failed to exec delete: %w", err)
 	}
-	_, err = tx.Exec(fmt.Sprintf("ALTER TABLE \"%s\" ENABLE TRIGGER ALL;", table))
+	_, err = tx.Exec(fmt.Sprintf("ALTER TABLE \"%q\" ENABLE TRIGGER ALL;", table))
 	if err != nil {
 		return fmt.Errorf("failed to enable trigger: %w", err)
 	}
@@ -95,12 +95,12 @@ func cleanUpDB(db *sqlx.DB) error {
 
 func CleanUpDB(db *sqlx.DB) error {
 	var err error
-	//name := t.Name()
+	// name := t.Name()
 	start := time.Now()
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		err = cleanUpDB(db)
 		if err != nil {
-			//t.Logf("Failed to cleanup for test %s, attempt %d: %s", name, attempt, err)
+			// t.Logf("Failed to cleanup for test %s, attempt %d: %s", name, attempt, err)
 			log.Printf("Failed to cleanup attempt %d: %s", attempt, err)
 			time.Sleep(delay * time.Duration(attempt))
 			continue
@@ -141,7 +141,7 @@ func prepareDB(db *sqlx.DB) error {
 
 func PrepareDB(db *sqlx.DB) error {
 	var err error
-	//name := t.Name()
+	// name := t.Name()
 	start := time.Now()
 	for attempt := 1; attempt <= maxAttempts; attempt++ {
 		err = prepareDB(db)

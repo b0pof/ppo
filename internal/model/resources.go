@@ -34,7 +34,7 @@ const (
 	UserFetchPath          Path = "GET:/api/1/users/{id}"
 	UserMetaFetchPath      Path = "GET:/api/1/users/{id}/meta"
 	UserUpdatePath         Path = "PUT:/api/1/users/{id}"
-	UserPasswordUpdatePath Path = "PATCH:/api/1/users/{id}/password"
+	UserPasswordUpdatePath Path = "PATCH:/api/1/users/{id}/password" //nolint:gosec
 
 	CategoryFetchPath      Path = "GET:/api/1/categories/{id}"
 	CategoryItemsFetchPath Path = "GET:/api/1/categories/{id}/items"

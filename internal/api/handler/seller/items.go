@@ -24,11 +24,10 @@ func (h *Seller) GetApi1SellerIdItems(w http.ResponseWriter, r *http.Request, id
 	}
 
 	response.OK(w, dto.ItemsFetchResponse{ProductCards: itemsToDTO(items)})
-	return
 }
 
 func itemsToDTO(items []model.Item) []dto.ItemCard {
-	var itemCards []dto.ItemCard
+	itemCards := make([]dto.ItemCard, 0, len(items))
 
 	for _, item := range items {
 		itemCards = append(itemCards, dto.ItemCard{

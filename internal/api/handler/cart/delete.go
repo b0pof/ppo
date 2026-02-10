@@ -24,5 +24,4 @@ func (h *Cart) DeleteApi1UsersUserIdCartItemsItemId(w http.ResponseWriter, r *ht
 	}
 
 	response.OK(w, dto.DeleteItemResponse{Count: newCount})
-	return
 }

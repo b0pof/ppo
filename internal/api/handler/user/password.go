@@ -19,7 +19,11 @@ func (h *User) PatchApi1UsersIdPassword(w http.ResponseWriter, r *http.Request, 
 		return
 	}
 
-	err = h.user.UpdatePassword(ctx, id, data.Password, data.NewPassword)
+	err = h.user.UpdatePassword(ctx, id, data.Password, data.NewPassword, false)
+	if errors.Is(err, model.ErrNeedToVerify) {
+		response.OK(w, "Код подтверждения отправлен на почту")
+		return
+	}
 	if errors.Is(err, model.ErrWrongPassword) {
 		response.BadRequest(w, "Неверный пароль")
 		return
@@ -35,5 +39,4 @@ func (h *User) PatchApi1UsersIdPassword(w http.ResponseWriter, r *http.Request, 
 	}
 
 	response.OK(w, nil)
-	return
 }

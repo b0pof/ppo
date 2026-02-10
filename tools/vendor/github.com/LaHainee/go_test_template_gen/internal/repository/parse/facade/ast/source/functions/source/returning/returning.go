@@ -2,9 +2,10 @@ package returning
 
 import (
 	"errors"
+	"go/ast"
+
 	"github.com/LaHainee/go_test_template_gen/internal/model"
 	"github.com/LaHainee/go_test_template_gen/internal/repository/parse/facade/ast/source/functions"
-	"go/ast"
 )
 
 type Source struct {

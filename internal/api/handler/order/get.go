@@ -24,7 +24,6 @@ func (h *Order) GetApi1UsersUserIdOrdersOrderId(w http.ResponseWriter, r *http.R
 	}
 
 	response.OK(w, toGetOrderDTO(order))
-	return
 }
 
 func toGetOrderDTO(o model.OrderExtended) dto.GetOrderResponse {

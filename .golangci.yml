@@ -1,0 +1,82 @@
+linters-settings:
+  cyclop:
+    max-complexity: 10
+    package-average: 5.0
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+  govet:
+    shadow: true
+  gosec:
+    excludes:
+      - G204
+      - G304
+      - G404
+  stylecheck:
+    checks: [ "all", "-ST1003" ]
+
+linters:
+  disable-all: true
+  enable:
+    - gofmt
+    - goimports
+    - gocyclo
+    - godox
+    - goprintffuncname
+    - gosimple
+    - misspell
+    - nakedret
+    - stylecheck
+    - unconvert
+    - whitespace
+
+    - copyloopvar
+    - nilerr
+    - staticcheck
+    - typecheck
+    - govet
+
+    - prealloc
+
+    - gosec
+
+    - cyclop
+    - funlen
+    - nestif
+    - maintidx
+
+    - ineffassign
+    - thelper
+
+run:
+  timeout: 5m
+  tests: true
+
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - funlen
+        - gocyclo
+        - maintidx
+    - linters:
+        - gosec
+      text: "G104"
+  exclude-files:
+    - ".*\\.pb\\.go$"
+    - ".*_test\\.go$"
+  exclude-dirs:
+    - vendor
+    - generated
+    - .git
+
+output:
+  formats: colored-line-number
+  print-issued-lines: true
+  print-linter-name: true

@@ -2,6 +2,7 @@ package instance_create
 
 import (
 	"fmt"
+
 	"github.com/LaHainee/go_test_template_gen/internal/model"
 	test "github.com/LaHainee/go_test_template_gen/internal/presenter/tests/model"
 	"github.com/LaHainee/go_test_template_gen/internal/presenter/tests/source/loop/instance_create/arguments"

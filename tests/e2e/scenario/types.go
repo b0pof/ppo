@@ -1,12 +1,5 @@
 package scenario
 
-// create_order_flow
-
-type loginResponse struct {
-	SessionID string `json:"sessionID"`
-	UserID    int64  `json:"userID"`
-}
-
 type createOrderResponse struct {
 	OrderID int64 `json:"orderID"`
 }

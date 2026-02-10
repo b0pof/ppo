@@ -50,7 +50,8 @@ func NewMetrics(reg prometheus.Registerer) *Metrics {
 			0.95: 0.1,
 			0.99: 0.1,
 			1:    0.1,
-		}}, labelSummary)
+		},
+	}, labelSummary)
 	reg.MustRegister(durationSummary)
 
 	return &Metrics{

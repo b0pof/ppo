@@ -13,16 +13,18 @@ type IUserUsecase interface {
 	GetRoleByID(ctx context.Context, userID int64) (string, error)
 	GetMetaInfoByUserID(ctx context.Context, userID int64) (model.UserMetaInfo, error)
 	UpdateByID(ctx context.Context, userID int64, user model.User) error
-	UpdatePassword(ctx context.Context, userID int64, oldPassword string, password string) error
+	UpdatePassword(ctx context.Context, userID int64, oldPassword string, password string, verified bool) error
 }
 
 type Usecase struct {
 	user userRepo
+	auth authUsecase
 }
 
-func New(u userRepo) *Usecase {
+func New(u userRepo, a authUsecase) *Usecase {
 	return &Usecase{
 		user: u,
+		auth: a,
 	}
 }
 
@@ -67,7 +69,7 @@ func (u *Usecase) UpdateByID(ctx context.Context, userID int64, user model.User)
 	return nil
 }
 
-func (u *Usecase) UpdatePassword(ctx context.Context, userID int64, oldPassword string, password string) error {
+func (u *Usecase) UpdatePassword(ctx context.Context, userID int64, oldPassword string, password string, verified bool) error {
 	err := model.ValidateUserPassword(password)
 	if err != nil {
 		return fmt.Errorf("user usecase: failed to validate password: %w", err)
@@ -80,6 +82,19 @@ func (u *Usecase) UpdatePassword(ctx context.Context, userID int64, oldPassword 
 
 	if !passwordUtil.Equal(oldPassword, user.Password) {
 		return model.ErrWrongPassword
+	}
+
+	if !verified {
+		err = u.user.SaveTempPasswords(ctx, userID, oldPassword, password)
+		if err != nil {
+			return fmt.Errorf("user usecase: failed to save temp passwords: %w", err)
+		}
+
+		_, err = u.auth.SendCode(ctx, userID, user.Login, model.VerificationPurposePasswordChange)
+		if err != nil {
+			return fmt.Errorf("user usecase: failed to send code: %w", err)
+		}
+		return model.ErrNeedToVerify
 	}
 
 	newPassword, err := passwordUtil.Hash(password)

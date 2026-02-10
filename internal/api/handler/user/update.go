@@ -34,5 +34,4 @@ func (h *User) PutApi1UsersId(w http.ResponseWriter, r *http.Request, id int64) 
 	}
 
 	response.OK(w, nil)
-	return
 }

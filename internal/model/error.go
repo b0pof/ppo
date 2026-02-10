@@ -12,6 +12,7 @@ var (
 	ErrCartIsEmpty   = errors.New("cart is empty")
 	ErrAlreadyExists = errors.New("already exists")
 	ErrNoAccess      = errors.New("no access")
+	ErrNeedToVerify  = errors.New("need to verify")
 )
 
 type ValidationError struct {

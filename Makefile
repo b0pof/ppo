@@ -15,6 +15,63 @@ TEST_DB_DSN="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(TES
 
 API_SCHEMA="api/schema.yml"
 
+.PHONY: install-tools
+install-tools: ## Установить инструменты для анализа кода
+	@echo "Installing static analysis tools..."
+	go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+	go install github.com/securego/gosec/v2/cmd/gosec@latest
+	go install golang.org/x/tools/cmd/goimports@latest
+	go install mvdan.cc/gofumpt@latest
+	go install honnef.co/go/tools/cmd/staticcheck@latest
+	go install golang.org/x/vuln/cmd/govulncheck@latest
+	go install github.com/GoASTScanner/gas@latest
+	go install github.com/fzipp/gocyclo/cmd/gocyclo@latest
+	# go install github.com/catenacyber/halstead@latest
+
+
+.PHONY: lint
+lint: ## Линтинг
+	@echo "Running linters..."
+	golangci-lint run ./...
+
+.PHONY: gocyclo
+cyclocomplex: ## Проверка цикломатической сложности
+	@echo "Checking cyclomatic complexity..."
+	gocyclo -over 10 .
+
+.PHONY: vet
+vet: ## go vet
+	@echo "Running go vet..."
+	go vet ./...
+
+.PHONY: fmt
+fmt: ## Форматировать код
+	@echo "Formatting code..."
+	goimports -w .
+	gofumpt -w .
+
+.PHONY: fmt-check
+fmt-check: ## Проверка форматирования кода
+	@echo "Checking code formatting..."
+	test -z $$(goimports -l .)
+	test -z $$(gofumpt -l .)
+
+.PHONY: staticcheck
+staticcheck: ## Статический анализ кода
+	@echo "Running staticcheck..."
+	staticcheck ./...
+
+.PHONY: security
+security: ## Security check
+	@echo "Running security checks..."
+	gas ./...
+
+.PHONY: quality
+quality: lint vet fmt-check cyclocomplex staticcheck
+
+.PHONY: pre-commit
+pre-commit: quality
+
 .PHONY: api
 api: ## Открыть схему контракта API в браузере
 	@swgui $(API_SCHEMA)
@@ -113,7 +170,7 @@ integration-fast: ## Запустить интеграционные тесты
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты
-	@make deps
+	@#make deps
 	@lsof -ti:$(APP_PORT) | xargs -r kill -9
 	@docker compose -f tests/docker-compose.e2e.yml up -d
 	@sleep 3

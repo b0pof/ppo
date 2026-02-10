@@ -31,5 +31,4 @@ func (h *Order) PatchApi1UsersUserIdOrdersOrderId(w http.ResponseWriter, r *http
 	}
 
 	response.OK(w, nil)
-	return
 }

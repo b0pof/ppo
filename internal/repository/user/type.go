@@ -2,6 +2,11 @@ package user
 
 import "github.com/b0pof/ppo/internal/model"
 
+type tempPwd struct {
+	Old string `db:"old"`
+	New string `db:"new"`
+}
+
 type userRow struct {
 	ID       int64   `db:"id"`
 	Name     *string `db:"name"`

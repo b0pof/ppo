@@ -47,5 +47,4 @@ func (h *Item) PutApi1ItemsId(w http.ResponseWriter, r *http.Request, id int64) 
 	}
 
 	response.OK(w, nil)
-	return
 }

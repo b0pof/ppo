@@ -3,6 +3,7 @@ package user
 
 import (
 	"context"
+	"time"
 
 	"github.com/b0pof/ppo/internal/model"
 )
@@ -14,4 +15,9 @@ type userRepo interface {
 	UpdatePasswordByID(ctx context.Context, userID int64, newPasswordHash string) error
 	UpdateByID(ctx context.Context, userID int64, user model.User) error
 	GetRoleByID(ctx context.Context, userID int64) (string, error)
+	SaveTempPasswords(ctx context.Context, userID int64, old, new string) error
+}
+
+type authUsecase interface {
+	SendCode(ctx context.Context, userID int64, email string, purpose string) (time.Time, error)
 }
