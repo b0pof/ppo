@@ -11,6 +11,8 @@ log.json
 log/
 logs/
 
+.github/workflows/.ci-cd-old.yml
+
 testresult.txt
 
 # Binaries for programs and plugins
