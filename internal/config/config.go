@@ -20,6 +20,10 @@ const (
 var GlobalCfg Config
 
 func init() {
+	if os.Getenv("GLOBAL_LOAD") == "false" {
+		return
+	}
+
 	GlobalCfg = *MustLoad()
 }
 

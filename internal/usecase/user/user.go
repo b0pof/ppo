@@ -3,8 +3,10 @@ package user
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/b0pof/ppo/internal/model"
+	"github.com/b0pof/ppo/internal/repository/verification"
 	passwordUtil "github.com/b0pof/ppo/internal/util/password"
 )
 
@@ -80,11 +82,12 @@ func (u *Usecase) UpdatePassword(ctx context.Context, userID int64, oldPassword 
 		return fmt.Errorf("user usecase: failed to get user: %w", err)
 	}
 
-	if !passwordUtil.Equal(oldPassword, user.Password) {
-		return model.ErrWrongPassword
+	state, err := u.getState(ctx, oldPassword, user)
+	if err != nil {
+		return fmt.Errorf("user usecase: failed to get user state: %w", err)
 	}
 
-	if !verified {
+	if !state.ExpiresAt.Add(6*time.Hour).After(time.Now()) && state.Success {
 		err = u.user.SaveTempPasswords(ctx, userID, oldPassword, password)
 		if err != nil {
 			return fmt.Errorf("user usecase: failed to save temp passwords: %w", err)
@@ -108,4 +111,17 @@ func (u *Usecase) UpdatePassword(ctx context.Context, userID int64, oldPassword 
 	}
 
 	return nil
+}
+
+func (u *Usecase) getState(ctx context.Context, oldPassword string, user model.User) (verification.VerificationCodeRow, error) {
+	if !passwordUtil.Equal(oldPassword, user.Password) {
+		return verification.VerificationCodeRow{}, model.ErrWrongPassword
+	}
+
+	state, err := verification.GlobalVerificationRepo.FetchAttempts(ctx, user.ID)
+	if err != nil {
+		return verification.VerificationCodeRow{}, fmt.Errorf("user usecase: failed to fetch verification state: %w", err)
+	}
+
+	return state, nil
 }

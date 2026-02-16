@@ -51,7 +51,7 @@ func (u *User) Random() model.User {
 
 	ctx := context.Background()
 
-	_ = authUsecase.Signup(ctx, testLogin, testPassword, model.RoleBuyer)
+	_, _ = authUsecase.Signup(ctx, testLogin, testPassword, model.RoleBuyer)
 	newUser, _ := u.user.GetByLogin(ctx, testLogin)
 
 	return newUser

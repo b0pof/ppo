@@ -32,10 +32,11 @@ lint: ## Линтинг
 	@echo "Running linters..."
 	golangci-lint run ./...
 
-.PHONY: gocyclo
-cyclocomplex: ## Проверка цикломатической сложности
+.PHONY: cyclo
+cyclo: ## Проверка цикломатической сложности
 	@echo "Checking cyclomatic complexity..."
-	gocyclo -over 10 .
+	gocyclo -over 10 -ignore '.*_test.go' .
+	gocyclo -top 10 -ignore '.*_test.go' .
 
 .PHONY: vet
 vet: ## go vet
@@ -60,7 +61,7 @@ staticcheck: ## Статический анализ кода
 	staticcheck ./...
 
 .PHONY: quality
-quality: lint vet fmt-check cyclocomplex staticcheck
+quality: lint vet fmt-check staticcheck cyclo
 
 .PHONY: pre-commit
 pre-commit: quality

@@ -19,7 +19,7 @@ import (
 
 type IAuthUsecase interface {
 	Login(ctx context.Context, login string, password string) (*string, error)
-	Signup(ctx context.Context, login string, password string, role string) error
+	Signup(ctx context.Context, login string, password string, role string) (int64, error)
 	Logout(sessionID string) error
 	IsLoggedIn(sessionID string) bool
 	GetUserIDBySessionID(sessionID string) (int64, error)
@@ -70,7 +70,7 @@ func (u *Usecase) Login(ctx context.Context, login string, password string) (*st
 		return nil, fmt.Errorf("auth usecase: Login: failed to get verification status: %w", err)
 	}
 
-	state := verificationState.New(status.Code, status.Attempts, status.ExpiresAt, status.BlockedUntil)
+	state := verificationState.New(status.Code, status.Attempts, status.ExpiresAt, status.BlockedUntil, status.Success)
 
 	if state.IsBlocked() {
 		return nil, model.ErrTemporaryBlocked
@@ -81,7 +81,7 @@ func (u *Usecase) Login(ctx context.Context, login string, password string) (*st
 		return nil, fmt.Errorf("auth usecase: failed to send code: %w", err)
 	}
 
-	return nil, nil
+	return nil, model.ErrNeedToVerify
 }
 
 func (u *Usecase) ApplyVerificationCode(ctx context.Context, email string, code string) (model.ApplyVerificationCodeResult, error) {
@@ -90,7 +90,7 @@ func (u *Usecase) ApplyVerificationCode(ctx context.Context, email string, code 
 		return model.ApplyVerificationCodeResult{}, err
 	}
 
-	state := verificationState.New(status.Code, status.Attempts, status.ExpiresAt, status.BlockedUntil)
+	state := verificationState.New(status.Code, status.Attempts, status.ExpiresAt, status.BlockedUntil, status.Success)
 
 	if state.IsBlocked() || state.IsLimitReached() {
 		return model.ApplyVerificationCodeResult{
@@ -101,7 +101,7 @@ func (u *Usecase) ApplyVerificationCode(ctx context.Context, email string, code 
 		}, nil
 	}
 
-	if state.IsExpired() {
+	if state.IsExpired() && state.ExpiresAt.Add(10*time.Minute).After(time.Now()) {
 		expiresAt, err := u.SendCode(ctx, user.ID, user.Login, status.Purpose)
 		return model.ApplyVerificationCodeResult{
 			Success:        false,
@@ -134,6 +134,10 @@ func (u *Usecase) ApplyVerificationCode(ctx context.Context, email string, code 
 		}, err
 	}
 
+	return u.pickAction(ctx, status, user)
+}
+
+func (u *Usecase) pickAction(ctx context.Context, status verification.VerificationCodeRow, user model.User) (model.ApplyVerificationCodeResult, error) {
 	if status.Purpose == model.VerificationPurposePasswordChange {
 		if err := u.updatePassword(ctx, user.ID); err != nil {
 			return model.ApplyVerificationCodeResult{}, err
@@ -179,27 +183,27 @@ func (u *Usecase) updatePassword(ctx context.Context, userID int64) error {
 	return nil
 }
 
-func (u *Usecase) Signup(ctx context.Context, login string, password string, role string) error {
+func (u *Usecase) Signup(ctx context.Context, login string, password string, role string) (int64, error) {
 	if login == "" || password == "" || role == "" {
-		return model.ErrInvalidInput
+		return 0, model.ErrInvalidInput
 	}
 
 	passwordHash, err := passwordUtil.Hash(password)
 	if err != nil {
-		return model.ErrFailedToHash
+		return 0, model.ErrFailedToHash
 	}
 
 	userID, err := u.user.Create(ctx, login, passwordHash, role)
 	if err != nil {
-		return fmt.Errorf("auth usecase: failed to create user: %w", err)
+		return 0, fmt.Errorf("auth usecase: failed to create user: %w", err)
 	}
 
 	_, err = u.SendCode(ctx, userID, login, model.VerificationPurposeAuth)
 	if err != nil {
-		return fmt.Errorf("auth usecase: failed to send code: %w", err)
+		return 0, fmt.Errorf("auth usecase: failed to send code: %w", err)
 	}
 
-	return nil
+	return userID, nil
 }
 
 func (u *Usecase) SendCode(ctx context.Context, userID int64, email string, purpose string) (time.Time, error) {

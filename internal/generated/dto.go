@@ -204,6 +204,12 @@ type SignupRequest struct {
 // SignupRequestRole defines model for SignupRequest.Role.
 type SignupRequestRole string
 
+// SignupResponse defines model for SignupResponse.
+type SignupResponse struct {
+	Id    int    `json:"id"`
+	Token string `json:"token"`
+}
+
 // UpdateItemRequest defines model for UpdateItemRequest.
 type UpdateItemRequest struct {
 	Description string `json:"description"`

@@ -20,7 +20,7 @@ func (h *Auth) PostApi1Users(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.auth.Signup(ctx, data.Login, data.Password, string(data.Role))
+	userID, err := h.auth.Signup(ctx, data.Login, data.Password, string(data.Role))
 	if errors.Is(err, model.ErrAlreadyExists) {
 		response.BadRequest(w, "Пользователь уже существует")
 		return
@@ -39,5 +39,7 @@ func (h *Auth) PostApi1Users(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.OK(w, "Код отправлен на почту")
+	response.OK(w, dto.SignupResponse{
+		Id: int(userID),
+	})
 }

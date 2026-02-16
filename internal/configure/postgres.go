@@ -14,7 +14,7 @@ import (
 func MustInitPostgres(ctx context.Context, cfg config.PostgresConfig) *sqlx.DB {
 	hostPort := net.JoinHostPort(cfg.Host, cfg.Port)
 
-	dsn := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
+	dsn := fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s&timezone=Europe/Moscow",
 		cfg.User,
 		cfg.Password,
 		hostPort,

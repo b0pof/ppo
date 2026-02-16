@@ -17,9 +17,7 @@ fi
 
 echo "Cyclomatic complexity check passed"
 
-echo "Checking Halstead complexity..."
-
 echo "Top 10 most complex functions:"
 gocyclo -top 10 .
 
-echo "All complexity checks completed!"
+echo "All complexity checks completed"

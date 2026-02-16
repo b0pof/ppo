@@ -27,3 +27,18 @@ services:
       interval: 30s
       timeout: 20s
       retries: 3
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog-ppo-e2e
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+    environment:
+      - MH_STORAGE=memory
+      - MH_UI_WEB_PATH=/
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider", "http://localhost:8025" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3

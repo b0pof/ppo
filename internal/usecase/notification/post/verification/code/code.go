@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/b0pof/ppo/internal/config"
+	"github.com/cenkalti/backoff/v4"
 )
 
 type Usecase struct {
@@ -49,10 +50,24 @@ func (u *Usecase) SendCode(ctx context.Context, email string, code string) error
 			"Это автоматическое сообщение\r\n",
 	)
 
+	b := backoff.NewExponentialBackOff(
+		backoff.WithInitialInterval(300 * time.Millisecond),
+	)
+	backoffConfig := backoff.WithMaxRetries(b, 3)
+
 	errChan := make(chan error, 1)
 
 	go func() {
-		errChan <- smtp.SendMail(addr, auth, u.FromAddress, []string{email}, msg)
+		err := backoff.Retry(func() error {
+			errSend := smtp.SendMail(addr, auth, u.FromAddress, []string{email}, msg)
+			if errSend != nil {
+				return fmt.Errorf("failed to send mail: %w", errSend)
+			}
+			return nil
+		}, backoffConfig)
+		if err != nil {
+			errChan <- err
+		}
 	}()
 
 	select {

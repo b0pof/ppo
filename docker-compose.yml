@@ -19,6 +19,8 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+      TZ: 'Europe/Moscow'
+      PGTZ: 'Europe/Moscow'
     command: |
       postgres 
       -c wal_level=replica 
@@ -47,6 +49,8 @@ services:
       POSTGRES_DB: master
       PGDATABASE: master
       POSTGRES_PASSWORD: postgres
+      TZ: 'Europe/Moscow'
+      PGTZ: 'Europe/Moscow'
     command: |
         bash -c "
         until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=postgres --port=5432

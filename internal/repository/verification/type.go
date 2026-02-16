@@ -9,4 +9,5 @@ type VerificationCodeRow struct {
 	ExpiresAt    time.Time  `db:"expires_at"`
 	BlockedUntil *time.Time `db:"blocked_until"`
 	Purpose      string     `db:"purpose"`
+	Success      bool       `db:"success"`
 }

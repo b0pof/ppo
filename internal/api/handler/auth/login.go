@@ -21,6 +21,10 @@ func (h *Auth) PostApi1Auth(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionID, err := h.auth.Login(ctx, data.Login, data.Password)
+	if errors.Is(err, model.ErrNeedToVerify) {
+		response.OK(w, "Код отправлен на почту")
+		return
+	}
 	if errors.Is(err, model.ErrNotFound) {
 		response.BadRequest(w, "Пользователь не найден")
 		return
@@ -40,7 +44,7 @@ func (h *Auth) PostApi1Auth(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if sessionID != nil {
-		response.OK(w, "Код отправлен на почту")
+		response.OK(w, "Успешно")
 		cookie := &http.Cookie{
 			Name:     "session_id",
 			Value:    *sessionID,
@@ -52,5 +56,5 @@ func (h *Auth) PostApi1Auth(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.OK(w, "Код отправлен на почту")
+	response.Internal(w, errors.New("странно, куки нет"))
 }

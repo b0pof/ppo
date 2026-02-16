@@ -11,14 +11,16 @@ type VerificationState struct {
 	Attempts     int64
 	ExpiresAt    time.Time
 	BlockedUntil *time.Time
+	Success      bool
 }
 
-func New(code string, attempts int64, expiresAt time.Time, blockedUntil *time.Time) *VerificationState {
+func New(code string, attempts int64, expiresAt time.Time, blockedUntil *time.Time, success bool) *VerificationState {
 	return &VerificationState{
 		Code:         code,
 		Attempts:     attempts,
 		ExpiresAt:    expiresAt,
 		BlockedUntil: blockedUntil,
+		Success:      success,
 	}
 }
 
@@ -32,6 +34,10 @@ func (s *VerificationState) IsBlocked() bool {
 	}
 
 	return s.BlockedUntil.After(time.Now())
+}
+
+func (s *VerificationState) IsPassed() bool {
+	return s.Success
 }
 
 func (s *VerificationState) IsAvailable() bool {
