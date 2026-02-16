@@ -164,7 +164,7 @@ integration-fast: ## Запустить интеграционные тесты
 
 .PHONY: e2e-test
 e2e-test: ## Запустить e2e тесты
-	@#make deps
+	@make deps
 	@lsof -ti:$(APP_PORT) | xargs -r kill -9
 	@docker compose -f tests/docker-compose.e2e.yml up -d
 	@sleep 3
@@ -172,7 +172,7 @@ e2e-test: ## Запустить e2e тесты
 	@sleep 3
 	@POSTGRES_PORT=5433 POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
-		go test -json -p 1 -tags=e2e ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E; \
+		GMAIL_ADDRESS=${{ secrets.GMAIL_ADDRESS }} GMAIL_APP_PASSWORD=${{ secrets.GMAIL_APP_PASSWORD }} GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E; \
 		TEST_EXIT_CODE=$$?; \
 		lsof -ti:$(APP_PORT) | xargs -r kill -9
 		exit $$TEST_EXIT_CODE
