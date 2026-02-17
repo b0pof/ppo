@@ -22,6 +22,7 @@ import (
 )
 
 const (
+	baseURL      = "http://localhost:8080/api/1"
 	testPassword = "12345678"
 	newPassword  = "123456789"
 )
