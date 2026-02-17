@@ -33,6 +33,7 @@ jobs:
   e2e-tests-llm-mock:
     name: E2E Tests - Интеграция (mock)
     runs-on: ubuntu-latest
+#    needs: e2e-tests-2fa
     env:
       GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
       GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
@@ -58,6 +59,7 @@ jobs:
   e2e-tests-llm:
     name: E2E Tests - Интеграция
     runs-on: ubuntu-latest
+#    needs: e2e-tests-llm-mock
     env:
       GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
       GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}

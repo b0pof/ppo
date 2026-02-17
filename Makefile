@@ -170,49 +170,51 @@ integration-fast: ## Запустить интеграционные тесты
 	@go test -p 1 -tags=integration ./tests/integration/...
 
 .PHONY: e2e-test-2fa
-e2e-test: ## Запустить e2e тесты
+e2e-test-2fa: ## Запустить e2e тесты
 	@make deps
-	@lsof -ti:$(APP_PORT) | xargs -r kill -9
+	@lsof -ti:$(APP_PORT) | xargs -r kill -9 || true
 	@docker compose -f tests/docker-compose.e2e.yml up -d
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
 	@POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
-		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/2fa/... \
+		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/2fa/...; \
 		TEST_EXIT_CODE=$$?; \
-		lsof -ti:$(APP_PORT) | xargs -r kill -9
+		lsof -ti:$(APP_PORT) | xargs -r kill -9; \
 		exit $$TEST_EXIT_CODE
 
 .PHONY: e2e-test-llm
 e2e-test-llm: ## Запустить e2e тесты для интеграции
 	@make deps
-	@lsof -ti:$(APP_PORT) | xargs -r kill -9
+	@lsof -ti:$(APP_PORT) | xargs -r kill -9 || true
 	@docker compose -f tests/docker-compose.e2e.yml up -d
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
 	@POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
-		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/... \
+		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/...; \
 		TEST_EXIT_CODE=$$?; \
-		lsof -ti:$(APP_PORT) | xargs -r kill -9
+		lsof -ti:$(APP_PORT) | xargs -r kill -9; \
 		exit $$TEST_EXIT_CODE
 
 .PHONY: e2e-test-llm-mock
 e2e-test-llm-mock: ## Запустить e2e тесты для интеграции (mock)
 	@make deps
-	@lsof -ti:$(APP_PORT) | xargs -r kill -9
+	@lsof -ti:$(APP_PORT) | xargs -r kill -9 || true
+	@lsof -ti:6666 | xargs -r kill -9 || true
 	@docker compose -f tests/docker-compose.e2e.yml up -d
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
-	@go run tests/mock/server/llm/main.go & LLM_BASE_URL='http://localhost:6666' POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+	go run tests/mock/server/llm/main.go & \
+	LLM_BASE_URL='http://localhost:6666' POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
-		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/... \
+		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/...; \
 		TEST_EXIT_CODE=$$?; \
-		lsof -ti:$(APP_PORT) | xargs -r kill -9 \
-		lsof -ti:6666 | xargs -r kill -9 \
+		lsof -ti:$(APP_PORT) | xargs -r kill -9; \
+		lsof -ti:6666 | xargs -r kill -9; \
 		exit $$TEST_EXIT_CODE
 
 .PHONY: e2e-down
