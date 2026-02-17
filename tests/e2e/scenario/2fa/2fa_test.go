@@ -256,6 +256,9 @@ func (f *E2E2FAFlow) Test2FALoginFlowWithGmail(t provider.T) {
 
 	// Проверяем наличие Gmail credentials
 	gmailAddress := os.Getenv("GMAIL_ADDRESS")
+	if gmailAddress == "" {
+		gmailAddress = "ilya.kovalev002@gmail.com"
+	}
 	gmailAppPassword := os.Getenv("GMAIL_APP_PASSWORD")
 
 	if gmailAddress == "" || gmailAppPassword == "" {

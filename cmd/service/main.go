@@ -74,7 +74,7 @@ func main() {
 	if len(os.Getenv("LLM_API_KEY")) > 0 {
 		fmt.Println("<><><><> APIKEY found in env <><><><>")
 	} else {
-		fmt.Println(">< >< >< APIKEY found in env >< >< ><")
+		fmt.Println(">< >< >< NO APIKEY found in env >< >< ><")
 	}
 
 	llmClientOptions := []option.RequestOption{client.WithToken(os.Getenv("LLM_API_KEY"))}

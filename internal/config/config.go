@@ -45,8 +45,8 @@ type ServiceConfig struct {
 }
 
 type SMTPConfig struct {
-	FromAddress string `yaml:"from_address" env:"SMTP_FROM_ADDRESS"`
-	Password    string `yaml:"password" env:"SMTP_PASSWORD"`
+	FromAddress string `yaml:"from_address" env:"GMAIL_ADDRESS"`
+	Password    string `yaml:"password" env:"GMAIL_APP_PASSWORD"`
 	Host        string `yaml:"host" env:"SMTP_HOST"`
 	Port        string `yaml:"port" env:"SMTP_PORT"`
 }

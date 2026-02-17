@@ -177,7 +177,7 @@ e2e-test-2fa: ## Запустить e2e тесты
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
-	@POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+	@POSTGRES_PORT=5433 GLOBAL_LOAD=false POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
 		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/2fa/...; \
 		TEST_EXIT_CODE=$$?; \
@@ -192,7 +192,7 @@ e2e-test-llm: ## Запустить e2e тесты для интеграции
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
-	@POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+	@POSTGRES_PORT=5433 GLOBAL_LOAD=false POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
 		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/...; \
 		TEST_EXIT_CODE=$$?; \
@@ -209,7 +209,7 @@ e2e-test-llm-mock: ## Запустить e2e тесты для интеграц�
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
 	go run tests/mock/server/llm/main.go & \
-	LLM_BASE_URL='http://localhost:6666' POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+	LLM_BASE_URL='http://localhost:6666' POSTGRES_PORT=5433 GLOBAL_LOAD=false POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
 		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/...; \
 		TEST_EXIT_CODE=$$?; \
