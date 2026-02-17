@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/cohere-ai/cohere-go/v2/client"
+	"github.com/cohere-ai/cohere-go/v2/option"
 	apiMiddleware "github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/prometheus/client_golang/prometheus"
@@ -44,6 +46,7 @@ import (
 	"github.com/b0pof/ppo/internal/server"
 	authUc "github.com/b0pof/ppo/internal/usecase/auth"
 	cartUc "github.com/b0pof/ppo/internal/usecase/cart"
+	generateDescriptionUc "github.com/b0pof/ppo/internal/usecase/description/generate"
 	itemUc "github.com/b0pof/ppo/internal/usecase/item"
 	verificationCodeUc "github.com/b0pof/ppo/internal/usecase/notification/post/verification/code"
 	orderUc "github.com/b0pof/ppo/internal/usecase/order"
@@ -67,6 +70,19 @@ func main() {
 
 	reg := prometheus.NewRegistry()
 
+	// <! Clients
+	if len(os.Getenv("LLM_API_KEY")) > 0 {
+		fmt.Println("<><><><> APIKEY found in env <><><><>")
+	}
+
+	llmClientOptions := []option.RequestOption{client.WithToken(os.Getenv("LLM_API_KEY"))}
+	llmBaseUrl := os.Getenv("LLM_BASE_URL")
+	if len(llmBaseUrl) > 0 {
+		llmClientOptions = append(llmClientOptions, client.WithBaseURL(llmBaseUrl))
+	}
+	llmClient := client.NewClient(llmClientOptions...)
+	// !>
+
 	// <! Repositories
 	authRepository := authRepo.New(redis, authRepo.WithSessionTTL(cfg.Service.SessionTTL))
 	userRepository := userRepo.New(db)
@@ -79,10 +95,11 @@ func main() {
 	// !>
 
 	// <! Usecases
+	generateDescriptionUsecase := generateDescriptionUc.New(llmClient)
 	sendVerificationCodeUsecase := verificationCodeUc.New(cfg.SMTP)
 	cartUsecase := cartUc.New(cartRepository)
 	authUsecase := authUc.New(authRepository, verificationRepository, userRepository, sendVerificationCodeUsecase)
-	itemUsecase := itemUc.New(itemRepository)
+	itemUsecase := itemUc.New(itemRepository, generateDescriptionUsecase)
 	orderUsecase := orderUc.New(orderRepository, itemRepository, cartRepository)
 	userUsecase := userUc.New(userRepository, authUsecase)
 

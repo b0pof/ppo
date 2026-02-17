@@ -1,6 +1,6 @@
 //go:build e2e
 
-package scenario
+package llm
 
 import (
 	"testing"
@@ -9,6 +9,5 @@ import (
 )
 
 func TestSuite(t *testing.T) {
-	suite.RunSuite(t, new(E2E2FAFlow))
 	suite.RunSuite(t, new(E2ELLMDescriptionFlow))
 }

@@ -1,0 +1,198 @@
+openapi: 3.0.0
+info:
+  title: LLM Service API
+  version: 1.0.0
+  description: API для генерации текстов с помощью языковых моделей
+
+servers:
+  - url: http://localhost:8081
+    description: Local mock server
+  - url: https://api.llm-service.com/v1
+    description: Production server
+
+paths:
+  /v1/chat:
+    post:
+      summary: Generate text completion
+      operationId: generateChatCompletion
+      tags:
+        - chat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Too many requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    # Request DTO
+    ChatRequest:
+      type: object
+      required:
+        - message
+        - stream
+      properties:
+        message:
+          type: string
+          description: Текст запроса к модели
+          example: "Придумай и напиши описание для товара с названием \"Игрушка Doll с розовым платьем\" одним предложением"
+        stream:
+          type: boolean
+          description: Использовать стриминг (false для обычного режима)
+          example: false
+          default: false
+
+    # Response DTO
+    ChatResponse:
+      type: object
+      required:
+        - text
+        - generation_id
+        - response_id
+        - finish_reason
+        - chat_history
+        - meta
+      properties:
+        text:
+          type: string
+          description: Сгенерированный текст
+          example: "\"Игрушка Doll с розовым платьем\" — это очаровательная кукла в элегантном розовом наряде, которая станет любимой подругой для вашей девочки и вдохновит ее на бесконечные игры и фантазии."
+        generation_id:
+          type: string
+          format: uuid
+          description: ID генерации
+          example: "2c3a5854-95c4-4cc8-8ed9-a50a317705c0"
+        response_id:
+          type: string
+          format: uuid
+          description: ID ответа
+          example: "83f76ff7-03af-4c79-814b-0df8cdee481e"
+        finish_reason:
+          type: string
+          description: Причина завершения генерации
+          enum: [COMPLETE, STOP, LENGTH, CONTENT_FILTER, ERROR]
+          example: "COMPLETE"
+        chat_history:
+          type: array
+          description: История диалога
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        meta:
+          $ref: '#/components/schemas/MetaData'
+
+    ChatMessage:
+      type: object
+      required:
+        - message
+        - role
+      properties:
+        message:
+          type: string
+          description: Текст сообщения
+          example: "Придумай и напиши описание для товара с названием \"Игрушка Doll с розовым платьем\" одним предложением"
+        role:
+          type: string
+          description: Роль отправителя
+          enum: [USER, CHATBOT, SYSTEM]
+          example: "USER"
+
+    MetaData:
+      type: object
+      required:
+        - api_version
+        - billed_units
+        - tokens
+        - cached_tokens
+      properties:
+        api_version:
+          type: object
+          required:
+            - version
+          properties:
+            version:
+              type: string
+              description: Версия API
+              example: "1"
+        billed_units:
+          type: object
+          required:
+            - input_tokens
+            - output_tokens
+          properties:
+            input_tokens:
+              type: integer
+              description: Количество оплачиваемых токенов на входе
+              example: 29
+            output_tokens:
+              type: integer
+              description: Количество оплачиваемых токенов на выходе
+              example: 54
+        tokens:
+          type: object
+          required:
+            - input_tokens
+            - output_tokens
+          properties:
+            input_tokens:
+              type: integer
+              description: Общее количество токенов на входе
+              example: 524
+            output_tokens:
+              type: integer
+              description: Общее количество токенов на выходе
+              example: 56
+        cached_tokens:
+          type: integer
+          description: Количество токенов из кэша
+          example: 448
+
+    # Error response
+    ErrorResponse:
+      type: object
+      required:
+        - error
+      properties:
+        error:
+          type: object
+          required:
+            - code
+            - message
+          properties:
+            code:
+              type: string
+              description: Код ошибки
+              example: "rate_limit_exceeded"
+            message:
+              type: string
+              description: Описание ошибки
+              example: "Too many requests. Please try again later."
+            details:
+              type: object
+              description: Дополнительные детали ошибки
+              example: {"retry_after": 60}

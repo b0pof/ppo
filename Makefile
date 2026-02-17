@@ -15,6 +15,8 @@ TEST_DB_DSN="postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(DB_HOST):$(TES
 
 API_SCHEMA="api/schema.yml"
 
+API_SCHEMA_CLIENT="api/clients/cohere.yml"
+
 .PHONY: install-tools
 install-tools: ## Установить инструменты для анализа кода
 	@echo "Installing static analysis tools..."
@@ -75,9 +77,14 @@ httpcli: ## Сбилдить бинарь для httpcli
 	@go build -o httpcli cmd/httpcli/main.go
 
 .PHONY: codegen
-codegen: ## Сгенерировать код по документации API
+codegen: codegen-clients ## Сгенерировать код по документации API
 	@oapi-codegen -package dto -generate types -o internal/generated/dto.go $(API_SCHEMA)
 	@oapi-codegen -package dto -generate gorilla -o internal/generated/sdk.go $(API_SCHEMA)
+
+.PHONY: codegen-clients
+codegen-clients: ## Сгенерировать код для запросов к зависимостям по документации API
+	@oapi-codegen -package dto -generate types -o internal/generated/clients/dto.go $(API_SCHEMA_CLIENT)
+	@oapi-codegen -package dto -generate gorilla -o internal/generated/clients/sdk.go $(API_SCHEMA_CLIENT)
 
 .PHONY: up
 up: ## Поднять окружение
@@ -162,7 +169,7 @@ integration-fast: ## Запустить интеграционные тесты
 	@#go run tests/db/prepare.go
 	@go test -p 1 -tags=integration ./tests/integration/...
 
-.PHONY: e2e-test
+.PHONY: e2e-test-2fa
 e2e-test: ## Запустить e2e тесты
 	@make deps
 	@lsof -ti:$(APP_PORT) | xargs -r kill -9
@@ -170,11 +177,42 @@ e2e-test: ## Запустить e2e тесты
 	@sleep 3
 	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
 	@sleep 3
-	@POSTGRES_PORT=5433 POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+	@POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
 		sleep 3; \
-		GMAIL_ADDRESS=$(GMAIL_ADDRESS) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/... | golurectl -l -e -o report/e2e-allure-results --allure-suite E2E --allure-tags E2E; \
+		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/2fa/... \
 		TEST_EXIT_CODE=$$?; \
 		lsof -ti:$(APP_PORT) | xargs -r kill -9
+		exit $$TEST_EXIT_CODE
+
+.PHONY: e2e-test-llm
+e2e-test-llm: ## Запустить e2e тесты для интеграции
+	@make deps
+	@lsof -ti:$(APP_PORT) | xargs -r kill -9
+	@docker compose -f tests/docker-compose.e2e.yml up -d
+	@sleep 3
+	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
+	@sleep 3
+	@POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+		sleep 3; \
+		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/... \
+		TEST_EXIT_CODE=$$?; \
+		lsof -ti:$(APP_PORT) | xargs -r kill -9
+		exit $$TEST_EXIT_CODE
+
+.PHONY: e2e-test-llm-mock
+e2e-test-llm-mock: ## Запустить e2e тесты для интеграции (mock)
+	@make deps
+	@lsof -ti:$(APP_PORT) | xargs -r kill -9
+	@docker compose -f tests/docker-compose.e2e.yml up -d
+	@sleep 3
+	@-goose -dir db/migrations/master postgres $(TEST_DB_DSN) up
+	@sleep 3
+	@go run tests/mock/server/llm/main.go & LLM_BASE_URL='http://localhost:6666' POSTGRES_PORT=5433 GLOBAL_LOAD=false GMAIL_ADDRESS=$(GMAIL_ADDRESS) LLM_API_KEY=$(LLM_API_KEY) GMAIL_APP_PASSWORD=$(GMAIL_APP_PASSWORD) POSTGRES_DATABASE=postgres go run cmd/service/main.go & \
+		sleep 3; \
+		GLOBAL_LOAD=false go test -json -p 1 -tags=e2e ./tests/e2e/scenario/llm/... \
+		TEST_EXIT_CODE=$$?; \
+		lsof -ti:$(APP_PORT) | xargs -r kill -9 \
+		lsof -ti:6666 | xargs -r kill -9 \
 		exit $$TEST_EXIT_CODE
 
 .PHONY: e2e-down

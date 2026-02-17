@@ -17,12 +17,14 @@ type IItemUsecase interface {
 }
 
 type Usecase struct {
-	item itemRepo
+	item        itemRepo
+	description descriptionGenerator
 }
 
-func New(r itemRepo) *Usecase {
+func New(r itemRepo, d descriptionGenerator) *Usecase {
 	return &Usecase{
-		item: r,
+		item:        r,
+		description: d,
 	}
 }
 
@@ -36,6 +38,26 @@ func (u *Usecase) Create(ctx context.Context, item model.Item) (int64, error) {
 	if err != nil {
 		return 0, fmt.Errorf("item usecase: failed to create item: %w", err)
 	}
+
+	if len(item.Description) > 0 {
+		return itemID, nil
+	}
+
+	go func() {
+		ctx = context.WithoutCancel(ctx)
+
+		description, err := u.description.Generate(item.Name)
+		if err != nil {
+			fmt.Println("failed to generate description:", err)
+		}
+		err = u.item.UpdateByID(ctx, model.Item{
+			ID:          itemID,
+			Description: description,
+		})
+		if err != nil {
+			fmt.Println("failed to save generated description:", err)
+		}
+	}()
 
 	return itemID, nil
 }

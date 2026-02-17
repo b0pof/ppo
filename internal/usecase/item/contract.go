@@ -16,3 +16,7 @@ type itemRepo interface {
 	DeleteByID(ctx context.Context, itemID int64) error
 	UpdateByID(ctx context.Context, item model.Item) error
 }
+
+type descriptionGenerator interface {
+	Generate(productName string) (string, error)
+}

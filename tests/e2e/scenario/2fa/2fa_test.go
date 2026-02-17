@@ -1,6 +1,6 @@
 //go:build e2e
 
-package scenario
+package fa
 
 import (
 	"bytes"
