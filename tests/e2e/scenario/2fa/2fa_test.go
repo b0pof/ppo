@@ -363,7 +363,7 @@ func (f *E2E2FAFlow) Test2FALoginFlowWithGmail(t provider.T) {
 		ctx.Assert().NoError(err)
 		ctx.Assert().Equal(http.StatusOK, resp.StatusCode)
 
-		var reloginResp string
+		var reloginResp any
 		err = json.NewDecoder(resp.Body).Decode(&reloginResp)
 		resp.Body.Close()
 		ctx.Assert().NoError(err)
