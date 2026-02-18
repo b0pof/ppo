@@ -55,27 +55,16 @@ func (u *Usecase) SendCode(ctx context.Context, email string, code string) error
 	)
 	backoffConfig := backoff.WithMaxRetries(b, 3)
 
-	errChan := make(chan error, 1)
-
-	go func() {
-		err := backoff.Retry(func() error {
-			errSend := smtp.SendMail(addr, auth, u.FromAddress, []string{email}, msg)
-			if errSend != nil {
-				return fmt.Errorf("failed to send mail: %w", errSend)
-			}
-			return nil
-		}, backoffConfig)
-		if err != nil {
-			errChan <- err
+	err := backoff.Retry(func() error {
+		errSend := smtp.SendMail(addr, auth, u.FromAddress, []string{email}, msg)
+		if errSend != nil {
+			return fmt.Errorf("failed to send mail: %w", errSend)
 		}
-	}()
-
-	select {
-	case err := <-errChan:
+		return nil
+	}, backoffConfig)
+	if err != nil {
 		return err
-	case <-time.After(30 * time.Second):
-		return fmt.Errorf("SMTP timeout after 30 seconds")
-	case <-ctx.Done():
-		return ctx.Err()
 	}
+
+	return nil
 }
